@@ -41,12 +41,15 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name="background_img_url")
     private String backgroundImageURL;
 
-    @Column(name = "user_role")
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private UserRole userRole = UserRole.NORMAL;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Friend> friends;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Chat> chats;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
