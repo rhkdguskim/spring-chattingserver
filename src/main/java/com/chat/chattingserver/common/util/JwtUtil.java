@@ -100,7 +100,7 @@ public class JwtUtil {
                             .collect(Collectors.toList());
 
             // UserDetails 객체를 만들어서 Authentication 리턴
-            UserDetails principal = new User(claims.getId(), "", authorities);
+            UserDetails principal = new User(claims.getSubject(), "", authorities);
             return new UsernamePasswordAuthenticationToken(principal, "", authorities);
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) { //서명이 잘못 되었을때
             throw new AuthenticationException();
