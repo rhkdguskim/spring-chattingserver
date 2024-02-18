@@ -1,4 +1,4 @@
-package com.chat.chattingserver.common.exception.error;
+package com.chat.chattingserver.common.exception.error.auth;
 
 public class AuthenticationException extends RuntimeException {
     public AuthenticationException() {

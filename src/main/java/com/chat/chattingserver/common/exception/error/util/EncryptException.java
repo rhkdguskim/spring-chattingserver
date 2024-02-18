@@ -1,4 +1,4 @@
-package com.chat.chattingserver.common.exception.error;
+package com.chat.chattingserver.common.exception.error.util;
 
 public class EncryptException extends RuntimeException {
     public EncryptException() {
