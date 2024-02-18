@@ -1,6 +1,8 @@
 package com.chat.chattingserver.service;
 
-import com.chat.chattingserver.common.exception.error.user.InvalidUseridException;
+import com.chat.chattingserver.common.exception.error.user.UserAlreadyExistException;
+import com.chat.chattingserver.common.exception.error.user.UserInvalidException;
+import com.chat.chattingserver.common.exception.error.user.UserPasswordException;
 import com.chat.chattingserver.common.util.SecurityUtil;
 import com.chat.chattingserver.dto.UserLoginDto;
 import com.chat.chattingserver.dto.UserDto;
@@ -22,7 +24,7 @@ public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -32,24 +34,31 @@ public class UserService {
         return users.stream()
                 .map(user -> UserDto.Response.builder()
                         .user_id(user.getUserid())
+                        .name(user.getNickname())
                         .status_msg(user.getStatusMessage())
+                        .role(user.getUserRole())
                         .build())
                         .collect(Collectors.toList());
     }
     @Transactional
-    public User Register(UserDto.Request userRegisterRequest)
+    public UserDto.Response Register(UserDto.Request userRegisterRequest)
     {
         if(userRepository.existsUserByUserid(userRegisterRequest.getUser_id()))
         {
-            throw new InvalidUseridException("Already User Exist");
+            throw new UserAlreadyExistException();
         }
 
         User user = new User();
-        String UserID = userRegisterRequest.getUser_id();
         user.setUserid(userRegisterRequest.getUser_id());
         user.setNickname(userRegisterRequest.getName());
         user.setPassword(SecurityUtil.encryptSHA256(userRegisterRequest.getPassword()));
-        return userRepository.save(user);
+        User newUser = userRepository.save(user);
+        return UserDto.Response.builder()
+                .user_id(newUser.getUserid())
+                .name(newUser.getNickname())
+                .status_msg(newUser.getStatusMessage())
+                .role(newUser.getUserRole())
+                .build();
     }
 
     @Transactional
@@ -59,11 +68,13 @@ public class UserService {
 
         if(!user.getPassword().equals(SecurityUtil.encryptSHA256(userLoginRequest.getPassword())))
         {
-            throw new InvalidUseridException("InValid Password");
+            throw new UserPasswordException();
         }
 
         return UserDto.Response.builder()
                 .user_id(user.getUserid())
+                .name(user.getNickname())
+                .status_msg(user.getStatusMessage())
                 .role(user.getUserRole())
                 .build();
     }
@@ -84,7 +95,7 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByUserid(userid);
         if(userOptional.isEmpty())
         {
-            throw new InvalidUseridException("There is no User in Server");
+            throw new UserInvalidException();
         }
 
         return userOptional.get();
