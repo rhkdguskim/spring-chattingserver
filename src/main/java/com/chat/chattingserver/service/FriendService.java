@@ -29,9 +29,12 @@ public class FriendService {
         List<User> users = friendRepository.getUserFriends(request.getUserId()).orElseThrow(() -> new RuntimeException("no Friends founded"));
 
         List<UserDto.Response> friends = users.stream().map(user-> UserDto.Response.builder()
-                        .name(user.getNickname())
-                        .statusMsg(user.getStatusMessage())
-                        .build()).toList();
+                .role(user.getUserRole())
+                .userId(user.getUserid())
+                .id(user.getId())
+                .statusMsg(user.getStatusMessage())
+                .name(user.getNickname())
+                .build()).toList();
 
         return FriendDto.Response
                 .builder()
@@ -62,13 +65,14 @@ public class FriendService {
 
     public boolean delFriend(FriendDto.Delete.Request request)
     {
-        friendRepository.deleteById(request.getId());
+
+        friendRepository.delete(request.getUserId(), request.getFriendId());
         return true;
     }
 
     public boolean modifyFriend(FriendDto.Modify.Request request)
     {
-        com.chat.chattingserver.domain.Friend friend = friendRepository.findById(request.getId()).orElseThrow(() -> new RuntimeException("no friend founded"));
+        Friend friend = friendRepository.findFriend(request.getUserId(), request.getFriendId()).orElseThrow(()-> new RuntimeException("no friend founded"));
         friend.setFriend_name(request.getFriendName());
         friendRepository.save(friend);
         return true;

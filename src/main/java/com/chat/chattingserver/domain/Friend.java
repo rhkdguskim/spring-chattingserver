@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name="friend")
+@Table(name="friend", uniqueConstraints = { @UniqueConstraint(columnNames = {"friend_id", "user_id"})})
 @Getter
 @Setter
 public class Friend extends BaseTimeEntity {

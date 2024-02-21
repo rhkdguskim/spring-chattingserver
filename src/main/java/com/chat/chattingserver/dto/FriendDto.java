@@ -55,7 +55,8 @@ public class FriendDto {
         @AllArgsConstructor
         public static class Request
         {
-            private long id;
+            private long userId;
+            private long friendId;
         }
 
         @Builder
@@ -74,7 +75,7 @@ public class FriendDto {
         @NoArgsConstructor
         @AllArgsConstructor
         public static class Request {
-            private long id;
+            private long friendId;
             private long userId;
             private String friendName;
         }
