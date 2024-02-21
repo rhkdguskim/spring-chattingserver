@@ -1,12 +1,12 @@
 package com.chat.chattingserver.domain;
 
 
-import com.chat.chattingserver.common.aop.annotation.ChatType;
 import com.chat.chattingserver.common.aop.annotation.RoomType;
 import com.chat.chattingserver.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ import java.util.List;
 @Table(name="room")
 @Getter
 @Setter
+@ToString
 public class Room extends BaseTimeEntity {
 
     @Id
@@ -21,18 +22,18 @@ public class Room extends BaseTimeEntity {
     private long id;
 
     @Column(name="owner_id")
-    private long ownerid;
+    private long ownerId;
 
     @Column(name="room_name")
-    private String roomname;
+    private String roomName;
 
     @Column(name="last_chat")
-    private String lastchat;
+    private String lastChat;
 
-    @OneToMany
+    @OneToMany(mappedBy = "room")
     private List<Participant> participants;
 
-    @OneToMany
+    @OneToMany(mappedBy = "room")
     private List<Chat> chats;
 
     @Column(name = "type")

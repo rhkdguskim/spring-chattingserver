@@ -4,8 +4,10 @@ package com.chat.chattingserver.domain;
 import com.chat.chattingserver.common.aop.annotation.UserRole;
 import com.chat.chattingserver.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,18 +20,22 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @Setter
+@ToString
 public class User extends BaseTimeEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name="userid")
+    @NotNull
     private String userid;
 
     @Column(name="password")
+    @NotNull
     private String password;
 
     @Column(name="name")
+    @NotNull
     private String nickname;
 
     @Column(name="status_msg")
@@ -45,10 +51,10 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole userRole = UserRole.NORMAL;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Friend> friends;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Chat> chats;
 
     @Override

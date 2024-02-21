@@ -2,6 +2,7 @@ package com.chat.chattingserver.domain;
 
 import com.chat.chattingserver.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,11 +17,13 @@ public class Friend extends BaseTimeEntity {
 
     @Column(name="friend_id")
     private long friend_id;
+
     @Column(name="friend_name")
+    @NotNull
     private String friend_name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     private User user;
 
 }
