@@ -4,14 +4,12 @@ import com.chat.chattingserver.common.exception.error.user.UserAlreadyExistExcep
 import com.chat.chattingserver.common.exception.error.user.UserInvalidException;
 import com.chat.chattingserver.common.exception.error.user.UserPasswordException;
 import com.chat.chattingserver.common.util.SecurityUtil;
-import com.chat.chattingserver.dto.UserLoginDto;
-import com.chat.chattingserver.dto.UserDto;
 import com.chat.chattingserver.domain.User;
+import com.chat.chattingserver.dto.UserDto;
 import com.chat.chattingserver.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,9 +31,10 @@ public class UserService {
         List<User> users = userRepository.findAll();
         return users.stream()
                 .map(user -> UserDto.Response.builder()
-                        .user_id(user.getUserid())
+                        .id(user.getId())
+                        .userId(user.getUserid())
                         .name(user.getNickname())
-                        .status_msg(user.getStatusMessage())
+                        .statusMsg(user.getStatusMessage())
                         .role(user.getUserRole())
                         .build())
                         .collect(Collectors.toList());
@@ -43,28 +42,28 @@ public class UserService {
     @Transactional
     public UserDto.Response Register(UserDto.Request userRegisterRequest)
     {
-        if(userRepository.existsUserByUserid(userRegisterRequest.getUser_id()))
+        if(userRepository.existsUserByUserid(userRegisterRequest.getUserId()))
         {
             throw new UserAlreadyExistException();
         }
 
         User user = new User();
-        user.setUserid(userRegisterRequest.getUser_id());
+        user.setUserid(userRegisterRequest.getUserId());
         user.setNickname(userRegisterRequest.getName());
         user.setPassword(SecurityUtil.encryptSHA256(userRegisterRequest.getPassword()));
         User newUser = userRepository.save(user);
         return UserDto.Response.builder()
-                .user_id(newUser.getUserid())
+                .userId(newUser.getUserid())
                 .name(newUser.getNickname())
-                .status_msg(newUser.getStatusMessage())
+                .statusMsg(newUser.getStatusMessage())
                 .role(newUser.getUserRole())
                 .build();
     }
 
     @Transactional
-    public UserDto.Response Login(UserLoginDto.Request userLoginRequest)
+    public UserDto.Response Login(UserDto.Login.Request userLoginRequest)
     {
-        User user = findUserByID(userLoginRequest.getUser_id());
+        User user = findUserByID(userLoginRequest.getUserId());
 
         if(!user.getPassword().equals(SecurityUtil.encryptSHA256(userLoginRequest.getPassword())))
         {
@@ -72,9 +71,9 @@ public class UserService {
         }
 
         return UserDto.Response.builder()
-                .user_id(user.getUserid())
+                .userId(user.getUserid())
                 .name(user.getNickname())
-                .status_msg(user.getStatusMessage())
+                .statusMsg(user.getStatusMessage())
                 .role(user.getUserRole())
                 .build();
     }
@@ -85,7 +84,7 @@ public class UserService {
         User user = findUserByID(userid);
         return UserDto.Response.builder()
                 .name(user.getNickname())
-                .user_id(user.getUserid())
+                .userId(user.getUserid())
                 .build();
     }
 

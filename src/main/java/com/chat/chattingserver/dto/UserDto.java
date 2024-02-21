@@ -1,6 +1,7 @@
 package com.chat.chattingserver.dto;
 
 import com.chat.chattingserver.common.aop.annotation.UserRole;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 public class UserDto {
@@ -10,7 +11,10 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
-        private String user_id;
+        @NotNull
+        private String userId;
+
+        @NotNull
         private String password;
         private String name;
     }
@@ -20,10 +24,32 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
-        private String user_id;
+        private long id;
+        private String userId;
         private String name;
-        private String status_msg;
+        private String statusMsg;
         private UserRole role;
+    }
+
+    public static class Login {
+        @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class Request
+        {
+            private String userId;
+            private String password;
+        }
+
+        @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class Response
+        {
+            private String jwtToken;
+        }
     }
 
 }
