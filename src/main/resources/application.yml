@@ -1,0 +1,24 @@
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:13306/chat
+    username: root
+    password: root
+
+jwt:
+  secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
+  accesstoken:
+    expiration: 3600
+  refreshtoken:
+    expireation: 1209600
+  payload:
+    key: test-jwt-payload-secret-key-test-jwt-payload-secret-key
+    iv: test-jwt-payload-iv
+
+logging:
+  level:
+    sql: info
+    web: info
+  config: classpath:log4j.xml
