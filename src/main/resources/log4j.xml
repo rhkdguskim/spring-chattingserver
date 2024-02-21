@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+
+    <Properties>
+        <Property name="consoleLayout">%style{%d{ISO8601}}{white} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${consoleLayout}" charset="UTF-8"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="console"/>
+        </Root>
+    </Loggers>
+
+    <!-- 스프링 프레임워크의 로그 레벨을 WARN으로 설정 -->
+    <Logger name="org.springframework" level="WARN" additivity="false">
+        <AppenderRef ref="console"/>
+    </Logger>
+
+    <!-- 하이버네이트 SQL 로그 레벨을 WARN으로 설정 -->
+    <Logger name="org.hibernate.SQL" level="WARN" additivity="false">
+        <AppenderRef ref="console"/>
+    </Logger>
+
+</Configuration>
