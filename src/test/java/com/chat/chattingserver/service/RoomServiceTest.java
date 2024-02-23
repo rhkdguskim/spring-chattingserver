@@ -1,5 +1,7 @@
 package com.chat.chattingserver.service;
 
+
+import com.chat.chattingserver.common.aop.annotation.RoomType;
 import com.chat.chattingserver.dto.ChatDto;
 import com.chat.chattingserver.dto.RoomDto;
 import com.chat.chattingserver.dto.UserDto;
@@ -25,18 +27,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ChatServiceTest {
-
-    private final Logger logger = LoggerFactory.getLogger(ChattingService.class.getName());
+public class RoomServiceTest {
     private final static String userId = "TestUser";
+    private final static String userId2 = "TestUser2";
     private final static String roomName = "TestRoom";
-    private final int chattingCnt = 500;
+
     @Autowired
     private UserService userService;
     @Autowired
     private RoomService roomService;
-    @Autowired
-    private ChatService chatService;
 
     @BeforeAll()
     public void init()
@@ -46,12 +45,32 @@ public class ChatServiceTest {
                 .password("test1234")
                 .userId(userId)
                 .build();
-        UserDto.Response createdUser = userService.Register(user);
 
-        logger.info(createdUser.toString());
+        UserDto.Request user2 = UserDto.Request.builder()
+                .name("TestUser2")
+                .password("test12345")
+                .userId(userId2)
+                .build();
 
+        userService.Register(user);
+        userService.Register(user2);
+    }
+
+    @Test
+    @DisplayName("createRoom")
+    public void CreateRoom()
+    {
+        List<UserDto.Response> users = userService.GetUsers();
         ArrayList<UserDto.Response> participants = new ArrayList<>();
-        participants.add(createdUser);
+
+        for(var user : users)
+        {
+            participants.add(UserDto.Response.builder()
+                            .id(user.getId())
+                            .userId(user.getUserId())
+                            .name(user.getName())
+                    .build());
+        }
 
         RoomDto.AddRequest request = RoomDto.AddRequest.builder()
                 .roomName(roomName)
@@ -60,48 +79,35 @@ public class ChatServiceTest {
 
         RoomDto.AddResponse room = roomService.CreateRoom(request);
 
+        assertThat(room.getRoomName()).isEqualTo(roomName);
+        assertThat(room.getRoomType()).isEqualTo(RoomType.FRIEND);
+        assertThat(room.getParticipants().size()).isEqualTo(2);
+
+
+        List<RoomDto.RoomResponse> createdRoom = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
+                .userId(userId)
+                .build());
+    }
+
+    @Test
+    @DisplayName("FindRoom")
+    public void FindRoom()
+    {
         List<RoomDto.RoomResponse> createdRoom = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
                 .userId(userId)
                 .build());
 
-        logger.info(createdRoom.toString());
+        assertThat(createdRoom.getFirst().getRoomName()).isEqualTo(roomName);
+        assertThat(createdRoom.getFirst().getRoomType()).isEqualTo(RoomType.FRIEND);
+        assertThat(createdRoom.getFirst().getParticipants().size()).isEqualTo(2);
 
-        for (int i = 0; i < chattingCnt; i ++)
-        {
-            for (RoomDto.RoomResponse r : createdRoom) {
-                logger.info(chatService.CreateChatMessage(ChatDto.ChatMessageCreateRequest.builder()
-                        .roomId(r.getRoomId())
-                        .message("TestMessage" + i)
-                        .userId(createdUser.getUserId())
-                        .build()).toString());
-            }
-        }
-    }
-
-    @Test
-    @DisplayName("Pageing Chattings")
-    public void PageChatting()
-    {
-        var user = userService.FindUserByID(userId);
-        var rooms = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
-                .userId(user.getUserId())
+        List<RoomDto.RoomResponse> createdRoom2 = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
+                .userId(userId2)
                 .build());
 
-        int cnt = 0;
-        var cursor = 99999999L;
-        while (true)
-        {
-            var chattings = chatService.GetChatMessageByCursor(ChatDto.ChatMessageRequest.builder()
-                    .cursor(cursor)
-                    .roomId(rooms.getFirst().getRoomId())
-                    .build());
-
-            if(chattings.isEmpty())
-                break;
-
-            cursor = chattings.getLast().getId();
-            cnt += chattings.size();
-        }
-        assertThat(cnt).isEqualTo(chattingCnt);
+        assertThat(createdRoom2.getFirst().getRoomName()).isEqualTo(roomName);
+        assertThat(createdRoom2.getFirst().getRoomType()).isEqualTo(RoomType.FRIEND);
+        assertThat(createdRoom2.getFirst().getParticipants().size()).isEqualTo(2);
     }
+
 }

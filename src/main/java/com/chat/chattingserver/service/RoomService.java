@@ -1,5 +1,6 @@
 package com.chat.chattingserver.service;
 
+import com.chat.chattingserver.common.aop.annotation.RoomType;
 import com.chat.chattingserver.domain.Participant;
 import com.chat.chattingserver.domain.Room;
 import com.chat.chattingserver.domain.User;
@@ -9,16 +10,17 @@ import com.chat.chattingserver.repository.ParticipantRepository;
 import com.chat.chattingserver.repository.RoomRepository;
 import com.chat.chattingserver.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class RoomService {
 private final RoomRepository roomRepository;
 private final ParticipantRepository participantRepository;
-
 private final UserRepository userRepository;
     public RoomService(ParticipantRepository participantRepository,RoomRepository roomRepository, UserRepository userRepository)
     {
@@ -27,23 +29,31 @@ private final UserRepository userRepository;
         this.userRepository = userRepository;
     }
 
-    public List<RoomDto.RoomResponse> findRoom(RoomDto.RoomRequest request)
+    public List<RoomDto.RoomResponse> FindmyRoom(RoomDto.RoomRequest request)
     {
         List<Room> room = roomRepository.findRoomByUsers(request.getUserId());
-        return room.stream().map((r)-> RoomDto.RoomResponse
-                        .builder()
-                        .roomId(r.getId())
-                        .roomName(r.getRoomName())
-                        .lastChat(r.getLastChat())
-                        .roomType(r.getType())
-                        .build())
-                .collect(Collectors.toList());
+        return room.stream().map(r -> {
+            List<UserDto.Response> users = r.getParticipants().stream().map(p -> UserDto.Response.builder()
+                    .id(p.getUser().getId())
+                    .name(p.getUser().getUsername())
+                    .build()
+            ).collect(Collectors.toList());
+
+            return RoomDto.RoomResponse.builder()
+                    .roomId(r.getId())
+                    .roomName(r.getRoomName())
+                    .lastChat(r.getLastChat())
+                    .participants(users)
+                    .roomType(r.getType())
+                    .createdAt(r.getCreatedAt())
+                    .updatedAt(r.getUpdatedAt())
+                    .build();
+        }).collect(Collectors.toList());
 
     }
 
     public RoomDto.AddResponse CreateRoom(RoomDto.AddRequest request)
     {
-
         Room room = new Room();
         ArrayList<Participant> participants = new ArrayList<>();
         room.setRoomName(request.getRoomName());
@@ -57,11 +67,26 @@ private final UserRepository userRepository;
             participant.setRoomName(request.getRoomName());
             participants.add(participantRepository.save(participant));
         }
-        room.setParticipants(participants);
-        room.setRoomName(request.getRoomName());
 
+        if (request.getParticipants().size() >= 2)  {
+            room.setType(RoomType.FRIEND);
+        }
+
+        List<UserDto.Response> users = participants.stream().map(p -> {
+            return UserDto.Response.builder()
+                    .id(p.getUser().getId())
+                    .userId(p.getUser().getUserId())
+                    .name(p.getUser().getUsername())
+                    .build();
+        }).collect(Collectors.toList());
 
         return RoomDto.AddResponse.builder()
-                .roomId(room.getId()).roomName(room.getRoomName()).build();
+                .roomId(room.getId())
+                .roomName(room.getRoomName())
+                .roomType(room.getType())
+                .participants(users)
+                .createdAt(room.getCreatedAt())
+                .updatedAt(room.getUpdatedAt())
+                .build();
     }
 }

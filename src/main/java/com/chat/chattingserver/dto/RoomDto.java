@@ -3,6 +3,7 @@ package com.chat.chattingserver.dto;
 import com.chat.chattingserver.common.aop.annotation.RoomType;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.List;
 
 public class RoomDto {
@@ -26,8 +27,10 @@ public class RoomDto {
         private Long roomId;
         private String roomName;
         private String lastChat;
-        private UserDto.Response participants;
+        private List<UserDto.Response> participants;
         private RoomType roomType;
+        private Instant createdAt;
+        private Instant updatedAt;
     }
 
     @Builder
@@ -51,6 +54,9 @@ public class RoomDto {
     {
         private Long roomId;
         private String roomName;
-        private UserDto.Response participants;
+        private RoomType roomType;
+        private List<UserDto.Response> participants;
+        private Instant createdAt;
+        private Instant updatedAt;
     }
 }

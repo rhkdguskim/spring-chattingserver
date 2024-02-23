@@ -2,7 +2,7 @@ package com.chat.chattingserver.common.aop.annotation;
 
 public enum RoomType {
     INDIVIDUAL("individual"),
-    GROUP("group");
+    FRIEND("friend");
 
     private final String key;
 

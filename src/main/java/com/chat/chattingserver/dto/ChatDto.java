@@ -1,6 +1,8 @@
 package com.chat.chattingserver.dto;
 
+import jakarta.persistence.Column;
 import lombok.*;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
 
@@ -38,9 +40,11 @@ public class ChatDto {
     public static class ChatMessageResponse
     {
         private Long id;
-        private String message;
         private String userName;
         private String roomName;
+        private String message;
+        private Instant createdAt;
+        private Instant updatedAt;
     }
 
 

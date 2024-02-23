@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
-    @Query("select new com.chat.chattingserver.dto.ChatDto$ChatMessageResponse(c.id, c.message, c.user.name, c.room.roomName) " +
+    @Query("select new com.chat.chattingserver.dto.ChatDto$ChatMessageResponse(c.id, c.message, c.user.name, c.room.roomName, c.createdAt, c.updatedAt) " +
             "from Chat c where c.room.id = :roomId and c.id < :cursor")
     Slice<ChatDto.ChatMessageResponse> getChattings(@Param("roomId") Long roomId,
                                                     @Param("cursor") Long cursor,
