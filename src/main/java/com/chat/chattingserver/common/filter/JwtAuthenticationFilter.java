@@ -18,8 +18,6 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
-
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
@@ -28,8 +26,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         // 2. validateToken 으로 토큰 유효성 검사
         if (token != null) {
-            Authentication authentication = JwtUtil.validate(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(JwtUtil.validate(token));
         }
         chain.doFilter(request, response);
     }

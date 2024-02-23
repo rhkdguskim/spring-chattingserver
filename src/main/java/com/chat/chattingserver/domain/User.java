@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id"})})
 @Getter
 @Setter
 @ToString
@@ -26,9 +26,9 @@ public class User extends BaseTimeEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="userid")
+    @Column(name="user_id")
     @NotNull
-    private String userid;
+    private String userId;
 
     @Column(name="password")
     @NotNull
@@ -36,7 +36,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Column(name="name")
     @NotNull
-    private String nickname;
+    private String name;
 
     @Column(name="status_msg")
     private String statusMessage;
@@ -66,7 +66,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.userid;
+        return this.userId;
     }
 
     @Override

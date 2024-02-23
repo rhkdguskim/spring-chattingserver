@@ -28,14 +28,14 @@ public class UserRepositoryTest {
     {
         User user = new User();
         user.setUserRole(UserRole.NORMAL);
-        user.setUserid("test_account");
-        user.setNickname("test_user_name");
+        user.setUserId("test_account");
+        user.setName("test_user_name");
         user.setPassword("test_user_password");
         User createdUser = repository.save(user);
 
         assertThat(createdUser).isInstanceOf(User.class);
         assertEquals(createdUser.getUsername(), user.getUsername());
-        assertEquals(createdUser.getNickname(), user.getNickname());
+        assertEquals(createdUser.getName(), user.getName());
     }
 
     @Test
@@ -47,13 +47,13 @@ public class UserRepositoryTest {
         {
             User user = new User();
             user.setUserRole(UserRole.NORMAL);
-            user.setUserid("test_account");
-            user.setNickname("test_user_name");
+            user.setUserId("test_account");
+            user.setName("test_user_name");
             user.setPassword("test_user_password");
             User createdUser = repository.save(user);
 
             assertEquals(createdUser.getUsername(), user.getUsername());
-            assertEquals(createdUser.getNickname(), user.getNickname());
+            assertEquals(createdUser.getName(), user.getName());
             users.add(createdUser);
         }
         assertThat(users.size()).isEqualTo(100);

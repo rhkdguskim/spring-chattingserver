@@ -35,32 +35,32 @@ public class FriendRepositoryTest {
     {
         User user = new User();
         user.setUserRole(UserRole.NORMAL);
-        user.setUserid("test_account");
-        user.setNickname("test_user_name");
+        user.setUserId("test_account");
+        user.setName("test_user_name");
         user.setPassword("test_user_password");
         User createdUser = userRepository.save(user);
 
         User user2 = new User();
         user2.setUserRole(UserRole.NORMAL);
-        user2.setUserid("test_account2");
-        user2.setNickname("test_user_name2");
+        user2.setUserId("test_account2");
+        user2.setName("test_user_name2");
         user2.setPassword("test_user_password");
         User createdUser2 = userRepository.save(user2);
 
         Friend friend = new Friend();
         friend.setUser(createdUser);
         friend.setFriend_id(createdUser2.getId());
-        friend.setFriend_name(createdUser2.getNickname());
+        friend.setFriend_name(createdUser2.getName());
         assertThat(friendRepository.save(friend)).isEqualTo(friend);
 
         Friend friend2 = new Friend();
         friend2.setUser(createdUser2);
         friend2.setFriend_id(createdUser.getId());
-        friend2.setFriend_name(createdUser.getNickname());
+        friend2.setFriend_name(createdUser.getName());
         assertThat(friendRepository.save(friend2)).isEqualTo(friend2);
 
-        List<User> friends1 = friendRepository.getUserFriends(user.getId()).orElse(null);
-        List<User> friends2 = friendRepository.getUserFriends(user2.getId()).orElse(null);
+        List<User> friends1 = friendRepository.getUserFriends(user.getUserId()).orElse(null);
+        List<User> friends2 = friendRepository.getUserFriends(user2.getUserId()).orElse(null);
 
 
         friends1.forEach(u -> {

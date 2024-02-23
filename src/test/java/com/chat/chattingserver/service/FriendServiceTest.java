@@ -48,7 +48,7 @@ public class FriendServiceTest {
                 if (!u1.getUserId().equals(u2.getUserId()))
                 {
                     FriendDto.Add.Request request = FriendDto.Add.Request.builder().
-                            userId(u2.getId()).
+                            userId(u2.getUserId()).
                             friendId(u1.getId()).
                             friendName(u1.getName()).
                             build();
@@ -67,9 +67,9 @@ public class FriendServiceTest {
 
         List<UserDto.Response> user = userService.GetUsers();
         user.forEach(u1 -> {
-            FriendDto.Request request = FriendDto.Request.builder().userId(u1.getId()).build();
+            FriendDto.Request request = FriendDto.Request.builder().userId(u1.getUserId()).build();
             FriendDto.Response response = friendService.getFriends(request);
-            assertThat(response.getUsers().size()).isEqualTo(USER_CNT-1);
+            assertThat(response.getFriends().size()).isEqualTo(USER_CNT-1);
         });
     }
 
@@ -80,12 +80,12 @@ public class FriendServiceTest {
         List<UserDto.Response> user = userService.GetUsers();
 
         user.forEach(u1 -> {
-            FriendDto.Request request = FriendDto.Request.builder().userId(u1.getId()).build();
+            FriendDto.Request request = FriendDto.Request.builder().userId(u1.getUserId()).build();
             FriendDto.Response response = friendService.getFriends(request);
 
-            response.getUsers().forEach(friend -> {
+            response.getFriends().forEach(friend -> {
                 FriendDto.Delete.Request delRequest = FriendDto.Delete.Request.builder()
-                        .userId(u1.getId())
+                        .userId(u1.getUserId())
                         .friendId(friend.getId())
                         .build();
                 friendService.delFriend(delRequest);
@@ -102,13 +102,13 @@ public class FriendServiceTest {
         List<UserDto.Response> user = userService.GetUsers();
 
         user.forEach(u1 -> {
-            FriendDto.Request request = FriendDto.Request.builder().userId(u1.getId()).build();
+            FriendDto.Request request = FriendDto.Request.builder().userId(u1.getUserId()).build();
             FriendDto.Response response = friendService.getFriends(request);
 
-            response.getUsers().forEach(friend -> {
+            response.getFriends().forEach(friend -> {
                 FriendDto.Modify.Request modRequest = FriendDto.Modify.Request.builder()
                         .friendId(friend.getId())
-                        .userId(u1.getId())
+                        .userId(u1.getUserId())
                         .friendName(friend.getName() + "mod")
                         .build();
                 assertThat(friendService.modifyFriend(modRequest)).isEqualTo(true);

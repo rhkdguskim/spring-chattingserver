@@ -22,3 +22,8 @@ logging:
     sql: debug
     web: debug
   config: classpath:log4j.xml
+
+springdoc:
+  use-fqn: true
+  api-docs:
+    enabled: true

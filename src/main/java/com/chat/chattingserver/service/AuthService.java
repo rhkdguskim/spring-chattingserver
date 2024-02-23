@@ -18,7 +18,7 @@ public class AuthService {
         //accountId 암호화
         String encryptedUserId;
         try{
-            encryptedUserId = SecurityUtil.encryptAES256(accountId + new Date(System.currentTimeMillis()));
+            encryptedUserId = SecurityUtil.encryptAES256(accountId);
         } catch (Exception e) {
             throw new AuthenticationException(e);
         }

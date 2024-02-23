@@ -68,4 +68,17 @@ public class SecurityUtil {
             throw new EncryptException(e);
         }
     }
+
+    public static String decryptAES256(String encryptedText) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE,
+                    new SecretKeySpec(secretKey.substring(0, 32).getBytes(), "AES"),
+                    new IvParameterSpec(iv.substring(0, 16).getBytes()));
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText.getBytes("UTF-8")));
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            throw new EncryptException(e);
+        }
+    }
 }

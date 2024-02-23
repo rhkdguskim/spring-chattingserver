@@ -1,6 +1,8 @@
 package com.chat.chattingserver.dto;
 
 import com.chat.chattingserver.common.aop.annotation.UserRole;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -10,6 +12,8 @@ public class UserDto {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @ToString
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class Request {
         @NotNull
         private String userId;
@@ -23,6 +27,8 @@ public class UserDto {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @ToString
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class Response {
         private long id;
         private String userId;
@@ -36,6 +42,8 @@ public class UserDto {
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
+        @ToString
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class Request
         {
             private String userId;
@@ -46,6 +54,8 @@ public class UserDto {
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
+        @ToString
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class Response
         {
             private String jwtToken;

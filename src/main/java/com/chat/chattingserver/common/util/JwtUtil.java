@@ -89,7 +89,7 @@ public class JwtUtil {
         try {
             Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
             Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-            if (claims.get("userRole") == null) {
+            if (claims.get("userRole") == null || claims.get("userId") == null) {
                 throw new AuthenticationException("Authorization Error");
             }
 
@@ -100,7 +100,7 @@ public class JwtUtil {
                             .collect(Collectors.toList());
 
             // UserDetails 객체를 만들어서 Authentication 리턴
-            UserDetails principal = new User(claims.getSubject(), "", authorities);
+            UserDetails principal = new User(SecurityUtil.decryptAES256(claims.get("userId").toString()), "", authorities);
             return new UsernamePasswordAuthenticationToken(principal, "", authorities);
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) { //서명이 잘못 되었을때
             throw new AuthenticationException();

@@ -1,6 +1,10 @@
 package com.chat.chattingserver.dto;
 
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +18,7 @@ public class FriendDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
-        private Long userId;
+        private String userId;
     }
 
     @Builder
@@ -22,7 +26,7 @@ public class FriendDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
-        private List<UserDto.Response> users;
+        private List<UserDto.Response> friends;
     }
 
     public static class Add {
@@ -31,9 +35,16 @@ public class FriendDto {
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class Request {
-            private long userId;
-            private long friendId;
+
+            @Schema(description = "User ID", nullable = true, example = "test_friend2")
+            private String userId;
+
+            @Schema(description = "Friend ID", nullable = false, example = "1")
+            private Long friendId;
+
+            @Schema(description = "Friend Name", nullable = false, example = "test_name")
             private String friendName;
         }
 
@@ -41,8 +52,9 @@ public class FriendDto {
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class Response {
-            private long id;
+            private Long FriendId;
             private String friendName;
         }
     }
@@ -53,16 +65,21 @@ public class FriendDto {
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class Request
         {
-            private long userId;
-            private long friendId;
+            @Schema(description = "User ID", nullable = false, example = "userId")
+            private String userId;
+
+            @Schema(description = "Friend ID", nullable = false, example = "1")
+            private Long friendId;
         }
 
         @Builder
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class Response
         {
             private String message;
@@ -74,15 +91,17 @@ public class FriendDto {
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class Request {
             private long friendId;
-            private long userId;
+            private String userId;
             private String friendName;
         }
         @Builder
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class Response {
             private String message;
         }

@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class FriendService {
@@ -30,42 +28,35 @@ public class FriendService {
 
         List<UserDto.Response> friends = users.stream().map(user-> UserDto.Response.builder()
                 .role(user.getUserRole())
-                .userId(user.getUserid())
+                .userId(user.getUserId())
                 .id(user.getId())
                 .statusMsg(user.getStatusMessage())
-                .name(user.getNickname())
+                .name(user.getName())
                 .build()).toList();
 
         return FriendDto.Response
                 .builder()
-                .users(friends)
+                .friends(friends)
                 .build();
     }
 
     public FriendDto.Add.Response addFriend(FriendDto.Add.Request request)
     {
-        if(!userRepository.existsById(request.getUserId()))
-        {
-            throw new RuntimeException("user not exists");
-        }
+        User user = userRepository.findByUserId(request.getUserId()).orElseThrow(() -> new RuntimeException("user not exists"));
 
-        User user = new User();
-        user.setId(request.getUserId());
-
-        Friend friend = new Friend();
-        friend.setFriend_id(request.getFriendId());
-        friend.setFriend_name(request.getFriendName());
-        friend.setUser(user);
-        friend = this.friendRepository.save(friend);
+        Friend new_friend = new Friend();
+        new_friend.setFriend_id(request.getFriendId());
+        new_friend.setFriend_name(request.getFriendName());
+        new_friend.setUser(user);
+        new_friend = this.friendRepository.save(new_friend);
         return FriendDto.Add.Response.builder()
-                .id(friend.getId())
-                .friendName(friend.getFriend_name())
+                .FriendId(new_friend.getFriend_id())
+                .friendName(new_friend.getFriend_name())
                 .build();
     }
 
     public boolean delFriend(FriendDto.Delete.Request request)
     {
-
         friendRepository.delete(request.getUserId(), request.getFriendId());
         return true;
     }

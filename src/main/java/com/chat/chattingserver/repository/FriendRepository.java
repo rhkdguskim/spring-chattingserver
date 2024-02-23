@@ -14,14 +14,14 @@ import java.util.Optional;
 @Repository
 public interface FriendRepository extends JpaRepository<Friend, Long> {
 
-    @Query("select f from Friend f where f.friend_id = :friendId and f.user.id =:userId")
-    Optional<Friend> findFriend(@Param("userId") Long userId, @Param("friendId") Long friendId);
+    @Query("select f from Friend f where f.friend_id = :friendId and f.user.userId =:userId")
+    Optional<Friend> findFriend(@Param("userId") String userId, @Param("friendId") Long friendId);
     @Modifying
     @Transactional
-    @Query("delete from Friend f where f.friend_id = :friendId and f.user.id =:userId")
-    void delete(@Param("userId") Long userId, @Param("friendId") Long friendId);
+    @Query("delete from Friend f where f.friend_id = :friendId and f.user.userId =:userId")
+    void delete(@Param("userId") String userId, @Param("friendId") Long friendId);
 
     @Query("select u from User u where u.id in " +
-            "(select f.friend_id from Friend f where f.user.id = :userId)")
-    Optional<List<User>> getUserFriends(@Param("userId") Long userId);
+            "(select f.friend_id from Friend f where f.user.userId = :userId)")
+    Optional<List<User>> getUserFriends(@Param("userId") String userId);
 }

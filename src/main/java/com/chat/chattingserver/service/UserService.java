@@ -32,8 +32,8 @@ public class UserService {
         return users.stream()
                 .map(user -> UserDto.Response.builder()
                         .id(user.getId())
-                        .userId(user.getUserid())
-                        .name(user.getNickname())
+                        .userId(user.getUserId())
+                        .name(user.getName())
                         .statusMsg(user.getStatusMessage())
                         .role(user.getUserRole())
                         .build())
@@ -42,19 +42,19 @@ public class UserService {
     @Transactional
     public UserDto.Response Register(UserDto.Request userRegisterRequest)
     {
-        if(userRepository.existsUserByUserid(userRegisterRequest.getUserId()))
+        if(userRepository.existsUserByUserId(userRegisterRequest.getUserId()))
         {
             throw new UserAlreadyExistException();
         }
 
         User user = new User();
-        user.setUserid(userRegisterRequest.getUserId());
-        user.setNickname(userRegisterRequest.getName());
+        user.setUserId(userRegisterRequest.getUserId());
+        user.setName(userRegisterRequest.getName());
         user.setPassword(SecurityUtil.encryptSHA256(userRegisterRequest.getPassword()));
         User newUser = userRepository.save(user);
         return UserDto.Response.builder()
-                .userId(newUser.getUserid())
-                .name(newUser.getNickname())
+                .userId(newUser.getUserId())
+                .name(newUser.getName())
                 .statusMsg(newUser.getStatusMessage())
                 .role(newUser.getUserRole())
                 .build();
@@ -71,8 +71,8 @@ public class UserService {
         }
 
         return UserDto.Response.builder()
-                .userId(user.getUserid())
-                .name(user.getNickname())
+                .userId(user.getUserId())
+                .name(user.getName())
                 .statusMsg(user.getStatusMessage())
                 .role(user.getUserRole())
                 .build();
@@ -83,15 +83,15 @@ public class UserService {
     {
         User user = findUserByID(userid);
         return UserDto.Response.builder()
-                .name(user.getNickname())
-                .userId(user.getUserid())
+                .name(user.getName())
+                .userId(user.getUserId())
                 .build();
     }
 
 
     private User findUserByID(String userid)
     {
-        Optional<User> userOptional = userRepository.findByUserid(userid);
+        Optional<User> userOptional = userRepository.findByUserId(userid);
         if(userOptional.isEmpty())
         {
             throw new UserInvalidException();

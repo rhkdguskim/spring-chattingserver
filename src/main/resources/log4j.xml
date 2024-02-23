@@ -16,12 +16,10 @@
         </Root>
     </Loggers>
 
-    <!-- 스프링 프레임워크의 로그 레벨을 WARN으로 설정 -->
     <Logger name="org.springframework" level="WARN" additivity="false">
         <AppenderRef ref="console"/>
     </Logger>
 
-    <!-- 하이버네이트 SQL 로그 레벨을 WARN으로 설정 -->
     <Logger name="org.hibernate.SQL" level="WARN" additivity="false">
         <AppenderRef ref="console"/>
     </Logger>
