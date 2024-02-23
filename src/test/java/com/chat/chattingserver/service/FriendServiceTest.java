@@ -43,20 +43,22 @@ public class FriendServiceTest {
     public void addFriend()
     {
         List<UserDto.Response> user = userService.GetUsers();
-        user.forEach(u1 -> {
-            user.forEach(u2 -> {
-                if (!u1.getUserId().equals(u2.getUserId()))
+        for(var user1 : user)
+        {
+            for(var user2 : user)
+            {
+                if (!user1.getUserId().equals(user2.getUserId()))
                 {
                     FriendDto.Add.Request request = FriendDto.Add.Request.builder().
-                            userId(u2.getUserId()).
-                            friendId(u1.getId()).
-                            friendName(u1.getName()).
+                            userId(user2.getUserId()).
+                            friendId(user1.getId()).
+                            friendName(user1.getName()).
                             build();
 
                     friendService.addFriend(request);
                 }
-            });
-        });
+            }
+        }
     }
 
     @Test

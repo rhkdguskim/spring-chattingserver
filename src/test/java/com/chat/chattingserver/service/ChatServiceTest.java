@@ -30,6 +30,7 @@ public class ChatServiceTest {
     private final Logger logger = LoggerFactory.getLogger(ChattingService.class.getName());
     private final static String userId = "TestUser";
     private final static String roomName = "TestRoom";
+    private final static String message = "TestMessage";
     private final int chattingCnt = 500;
     @Autowired
     private UserService userService;
@@ -71,7 +72,7 @@ public class ChatServiceTest {
             for (RoomDto.RoomResponse r : createdRoom) {
                 logger.info(chatService.CreateChatMessage(ChatDto.ChatMessageCreateRequest.builder()
                         .roomId(r.getRoomId())
-                        .message("TestMessage" + i)
+                        .message(message + i)
                         .userId(createdUser.getUserId())
                         .build()).toString());
             }
@@ -95,6 +96,11 @@ public class ChatServiceTest {
                     .cursor(cursor)
                     .roomId(rooms.getFirst().getRoomId())
                     .build());
+
+            for(var chat : chattings)
+            {
+                assertThat(chat.getMessage().contains(message)).isTrue();
+            }
 
             if(chattings.isEmpty())
                 break;
