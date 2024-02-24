@@ -1,3 +1,4 @@
 [submodule "client"]
 	path = client
 	url = https://rhkdguskim@github.com/rhkdguskim/chattingClient.git
+	branch = newchattingClientforSpring
