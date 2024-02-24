@@ -5,15 +5,12 @@ import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.ChatDto;
 import com.chat.chattingserver.dto.RoomDto;
 import com.chat.chattingserver.dto.UserDto;
-import lombok.extern.log4j.Log4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -48,8 +45,8 @@ public class ChatServiceTest {
     @BeforeAll()
     public void init()
     {
-        UserDto.Request user = UserDto.Request.builder()
-                .name("TestUser")
+        UserDto.UserInfoRequest user = UserDto.UserInfoRequest.builder()
+                .name(userId)
                 .password("test1234")
                 .userId(userId)
                 .build();
@@ -61,8 +58,8 @@ public class ChatServiceTest {
         ArrayList<User> participants = new ArrayList<>();
         participants.add(createdUser);
 
-        List<UserDto.Response> targetUser = participants.stream().map((participant) -> {
-            return modelMapper.map(participant, UserDto.Response.class);
+        List<RoomDto.ParticipantInfo> targetUser = participants.stream().map((participant) -> {
+            return modelMapper.map(participant, RoomDto.ParticipantInfo.class);
         }).collect(Collectors.toList());
 
         RoomDto.AddRequest request = RoomDto.AddRequest.builder()
@@ -75,6 +72,15 @@ public class ChatServiceTest {
         List<Room> createdRoom = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
                 .userId(userId)
                 .build());
+
+        for(int i =0; i< chattingCnt; ++i)
+        {
+            chatService.CreateChatMessage(ChatDto.ChatMessageCreateRequest.builder()
+                            .roomId(createdRoom.getLast().getId())
+                            .userId(userId)
+                            .message(message)
+                    .build());
+        }
 
     }
 
@@ -99,12 +105,13 @@ public class ChatServiceTest {
             for(var chat : chattings)
             {
                 assertThat(chat.getMessage().contains(message)).isTrue();
+                assertThat(chat.getRoomName()).isEqualTo(roomName);
             }
 
             if(chattings.isEmpty())
                 break;
 
-            cursor = chattings.getLast().getId();
+            cursor = chattings.getFirst().getId();
             cnt += chattings.size();
         }
         assertThat(cnt).isEqualTo(chattingCnt);

@@ -30,7 +30,7 @@ public class UserServiceTest {
     @DisplayName("createUser")
     public void createUser()
     {
-        UserDto.Request user = UserDto.Request.builder()
+        UserDto.UserInfoRequest user = UserDto.UserInfoRequest.builder()
                 .name("TestUser")
                 .password("test1234")
                 .userId(userId)

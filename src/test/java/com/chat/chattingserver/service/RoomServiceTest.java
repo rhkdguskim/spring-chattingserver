@@ -38,13 +38,13 @@ public class RoomServiceTest {
     @BeforeAll()
     public void init()
     {
-        UserDto.Request user = UserDto.Request.builder()
+        UserDto.UserInfoRequest user = UserDto.UserInfoRequest.builder()
                 .name("TestUser")
                 .password("test1234")
                 .userId(userId)
                 .build();
 
-        UserDto.Request user2 = UserDto.Request.builder()
+        UserDto.UserInfoRequest user2 = UserDto.UserInfoRequest.builder()
                 .name("TestUser2")
                 .password("test12345")
                 .userId(userId2)
@@ -59,14 +59,12 @@ public class RoomServiceTest {
     public void CreateRoom()
     {
         List<User> users = userService.GetUsers();
-        ArrayList<UserDto.Response> participants = new ArrayList<>();
+        ArrayList<RoomDto.ParticipantInfo> participants = new ArrayList<>();
 
         for(var user : users)
         {
-            participants.add(UserDto.Response.builder()
-                            .id(user.getId())
+            participants.add(RoomDto.ParticipantInfo.builder()
                             .userId(user.getUserId())
-                            .name(user.getName())
                     .build());
         }
 

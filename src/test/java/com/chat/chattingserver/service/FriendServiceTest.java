@@ -31,7 +31,7 @@ public class FriendServiceTest {
     {
         for (int i = 0; i < USER_CNT; i ++)
         {
-            UserDto.Request user = UserDto.Request.builder()
+            UserDto.UserInfoRequest user = UserDto.UserInfoRequest.builder()
                     .name("test_user_account" + i)
                     .password("test_user_name" + i)
                     .userId("test_user_password" + i)
@@ -51,13 +51,12 @@ public class FriendServiceTest {
             {
                 if (!user1.getUserId().equals(user2.getUserId()))
                 {
-                    FriendDto.Add.Request request = FriendDto.Add.Request.builder().
-                            userId(user2.getUserId()).
+                    FriendDto.AddRequest request = FriendDto.AddRequest.builder().
                             friendId(user1.getId()).
                             friendName(user1.getName()).
                             build();
 
-                    friendService.addFriend(request);
+                    friendService.addFriend(user2.getUserId(), request);
                 }
             }
         }
@@ -88,11 +87,10 @@ public class FriendServiceTest {
             List<User> users = friendService.getFriends(request);
 
             users.forEach(friend -> {
-                FriendDto.Delete.Request delRequest = FriendDto.Delete.Request.builder()
-                        .userId(u1.getUserId())
+                FriendDto.DeleteRequest delRequest = FriendDto.DeleteRequest.builder()
                         .friendId(friend.getId())
                         .build();
-                friendService.delFriend(delRequest);
+                friendService.delFriend(u1.getUserId(), delRequest);
             });
 
         });
@@ -110,12 +108,11 @@ public class FriendServiceTest {
             List<User> users = friendService.getFriends(request);
 
             users.forEach(friend -> {
-                FriendDto.Modify.Request modRequest = FriendDto.Modify.Request.builder()
+                FriendDto.ModifyRequest modRequest = FriendDto.ModifyRequest.builder()
                         .friendId(friend.getId())
-                        .userId(u1.getUserId())
                         .friendName(friend.getName() + "mod")
                         .build();
-                assertThat(friendService.modifyFriend(modRequest)).isEqualTo(true);
+                assertThat(friendService.modifyFriend(u1.getUserId(), modRequest)).isEqualTo(true);
             });
 
         });

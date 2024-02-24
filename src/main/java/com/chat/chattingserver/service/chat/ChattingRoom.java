@@ -1,18 +1,17 @@
 package com.chat.chattingserver.service.chat;
 
 import com.chat.chattingserver.domain.ChatMessage;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.util.HashMap;
 
+
+@RequiredArgsConstructor
 public class ChattingRoom {
 
-    private final HashMap<String, ParticipantSession> participants;
+    private final HashMap<String, ParticipantSession> participants = new HashMap<>();
 
-    ChattingRoom()
-    {
-        this.participants = new HashMap<>();
-    }
     public void addParticipant(String sessionID, ParticipantSession participantSession)
     {
         participants.put(sessionID, participantSession);
@@ -28,8 +27,6 @@ public class ChattingRoom {
         for (String key : participants.keySet()) {
             try {
                 participants.get(key).SendMessage(message);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

@@ -7,7 +7,6 @@ import com.chat.chattingserver.service.ChatService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,17 +33,6 @@ public class ChatContoller {
         CommonResponse response = CommonResponse.builder()
                 .success(true)
                 .response(this.chatService.GetChatMessageByCursor(request))
-                .build();
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PostMapping("")
-    public ResponseEntity<CommonResponse> AddChatting(@RequestBody ChatDto.ChatMessageCreateRequest request, @AuthenticationPrincipal UserDetails userDetails)
-    {
-        CommonResponse response = CommonResponse.builder()
-                .success(true)
-                .response(this.chatService.CreateChatMessage(request))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);

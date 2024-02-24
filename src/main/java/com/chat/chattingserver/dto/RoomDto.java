@@ -3,6 +3,8 @@ package com.chat.chattingserver.dto;
 import com.chat.chattingserver.common.aop.annotation.RoomType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.Instant;
@@ -17,6 +19,8 @@ public class RoomDto {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class RoomRequest
     {
+        @NotNull
+        @Schema(description = "User Id", nullable = false, example = "test_user")
         private String userId;
     }
 
@@ -26,16 +30,28 @@ public class RoomDto {
     @AllArgsConstructor
     @ToString
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class RoomResponse
+    public static class ParticipantInfo {
+        private String userId;
+    }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ToString
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class RoomInfo
     {
         private Long roomId;
         private String roomName;
         private String lastChat;
-        private List<UserDto.Response> participants;
+        private List<UserDto.UserInfo> participants;
         private RoomType roomType;
         private Instant createdAt;
         private Instant updatedAt;
     }
+
+
 
     @Builder
     @Data
@@ -45,24 +61,12 @@ public class RoomDto {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class AddRequest
     {
+        @NotNull
+        @Schema(description = "RoomName", nullable = false, example = "test_Room")
         private String roomName;
-        private List<UserDto.Response> participants;
-    }
 
-
-    @Builder
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @ToString
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class AddResponse
-    {
-        private Long roomId;
-        private String roomName;
-        private RoomType roomType;
-        private List<UserDto.Response> participants;
-        private Instant createdAt;
-        private Instant updatedAt;
+        @NotNull
+        @Schema(description = "participants", nullable = false)
+        private List<ParticipantInfo> participants;
     }
 }

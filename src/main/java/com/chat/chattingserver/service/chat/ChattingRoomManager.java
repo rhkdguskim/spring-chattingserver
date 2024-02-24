@@ -10,13 +10,14 @@ import com.chat.chattingserver.service.ChatService;
 import com.chat.chattingserver.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class ChattingRoomManager {
     private final HashMap<Long, ChattingRoom> chattingRooms = new HashMap<>();

@@ -1,18 +1,14 @@
 package com.chat.chattingserver.controller;
 
+import com.chat.chattingserver.common.aop.annotation.CurrentUserId;
 import com.chat.chattingserver.common.dto.CommonResponse;
 import com.chat.chattingserver.dto.FriendDto;
 import com.chat.chattingserver.service.FriendService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class FriendController {
     private final FriendService friendService;
     @GetMapping("")
-    public ResponseEntity<CommonResponse> GetMyFriends(@AuthenticationPrincipal UserDetails userDetails)
+    public ResponseEntity<CommonResponse> GetMyFriends(@CurrentUserId String userId)
     {
         FriendDto.Request result = FriendDto.Request.builder()
-                .userId(userDetails.getUsername())
+                .userId(userId)
                 .build();
 
         CommonResponse response = CommonResponse.builder()
@@ -38,33 +34,33 @@ public class FriendController {
     }
 
     @PostMapping("")
-    public ResponseEntity<CommonResponse> AddFriend(@RequestBody FriendDto.Add.Request request) {
+    public ResponseEntity<CommonResponse> AddFriend(@RequestBody FriendDto.AddRequest request, @CurrentUserId String userId) {
 
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(friendService.addFriend(request))
+                .response(friendService.addFriend(userId, request))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("")
-    public ResponseEntity<CommonResponse> ModFriend(@RequestBody FriendDto.Modify.Request request)
+    public ResponseEntity<CommonResponse> ModFriend(@RequestBody FriendDto.ModifyRequest request, @CurrentUserId String userId)
     {
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(friendService.modifyFriend(request))
+                .response(friendService.modifyFriend(userId, request))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("")
-    public ResponseEntity<CommonResponse> DeleteFriend(@RequestBody FriendDto.Delete.Request request)
+    public ResponseEntity<CommonResponse> DeleteFriend(@RequestBody FriendDto.DeleteRequest request, @CurrentUserId String userId)
     {
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(friendService.delFriend(request))
+                .response(friendService.delFriend(userId, request))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);

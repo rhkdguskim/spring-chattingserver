@@ -26,12 +26,12 @@ public class AuthController {
 
     private final AuthService authService;
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse> Register(@RequestBody UserDto.Login.Request userloginRequest) {
+    public ResponseEntity<CommonResponse> Register(@RequestBody UserDto.LoginRequest userloginRequest) {
 
-        User userInfo = userService.Login(userloginRequest);
+
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(authService.generateToken(userInfo.getUserId(), userInfo.getUserRole()))
+                .response(authService.generateToken(userService.Login(userloginRequest)))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);

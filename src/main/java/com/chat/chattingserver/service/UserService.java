@@ -8,15 +8,11 @@ import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.UserDto;
 import com.chat.chattingserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,22 +24,22 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User Register(UserDto.Request userRegisterRequest)
+    public User Register(UserDto.UserInfoRequest userRegisterUserInfoRequest)
     {
-        if(userRepository.existsUserByUserId(userRegisterRequest.getUserId()))
+        if(userRepository.existsUserByUserId(userRegisterUserInfoRequest.getUserId()))
         {
             throw new UserAlreadyExistException();
         }
 
         User user = new User();
-        user.setUserId(userRegisterRequest.getUserId());
-        user.setName(userRegisterRequest.getName());
-        user.setPassword(SecurityUtil.encryptSHA256(userRegisterRequest.getPassword()));
+        user.setUserId(userRegisterUserInfoRequest.getUserId());
+        user.setName(userRegisterUserInfoRequest.getName());
+        user.setPassword(SecurityUtil.encryptSHA256(userRegisterUserInfoRequest.getPassword()));
         return userRepository.save(user);
     }
 
 
-    public User Login(UserDto.Login.Request userLoginRequest)
+    public User Login(UserDto.LoginRequest userLoginRequest)
     {
         User user = findUserByID(userLoginRequest.getUserId());
 

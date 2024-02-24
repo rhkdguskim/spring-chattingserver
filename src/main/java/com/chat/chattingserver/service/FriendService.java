@@ -24,9 +24,9 @@ public class FriendService {
     {
         return friendRepository.getUserFriends(request.getUserId()).orElseThrow(() -> new RuntimeException("no Friends founded"));
     }
-    public Friend addFriend(FriendDto.Add.Request request)
+    public Friend addFriend(String userId, FriendDto.AddRequest request)
     {
-        User user = userRepository.findByUserId(request.getUserId()).orElseThrow(() -> new RuntimeException("user not exists"));
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("user not exists"));
 
         Friend new_friend = new Friend();
         new_friend.setFriend_id(request.getFriendId());
@@ -35,15 +35,15 @@ public class FriendService {
         return this.friendRepository.save(new_friend);
     }
 
-    public boolean delFriend(FriendDto.Delete.Request request)
+    public boolean delFriend(String userId, FriendDto.DeleteRequest request)
     {
-        friendRepository.delete(request.getUserId(), request.getFriendId());
+        friendRepository.delete(userId, request.getFriendId());
         return true;
     }
 
-    public boolean modifyFriend(FriendDto.Modify.Request request)
+    public boolean modifyFriend( String userId, FriendDto.ModifyRequest request)
     {
-        Friend friend = friendRepository.findFriend(request.getUserId(), request.getFriendId()).orElseThrow(()-> new RuntimeException("no friend founded"));
+        Friend friend = friendRepository.findFriend(userId, request.getFriendId()).orElseThrow(()-> new RuntimeException("no friend founded"));
         friend.setFriend_name(request.getFriendName());
         friendRepository.save(friend);
         return true;

@@ -1,7 +1,7 @@
 package com.chat.chattingserver.dto;
 
 
-import com.chat.chattingserver.common.aop.annotation.ChatType;
+import com.chat.chattingserver.common.aop.annotation.ChatMessageType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
@@ -12,8 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class ChatOnMessageDto {
-    private ChatType type;
-    private String message;
-    private Long roomId;
+public class WebSocketInterfaceChatDto<T> {
+    private ChatMessageType type;
+    private T payload;
 }

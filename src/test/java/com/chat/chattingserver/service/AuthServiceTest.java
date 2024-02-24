@@ -1,13 +1,13 @@
 package com.chat.chattingserver.service;
 
-import com.chat.chattingserver.common.aop.annotation.UserRole;
 import com.chat.chattingserver.common.exception.error.auth.AuthenticationException;
 import com.chat.chattingserver.common.util.JwtUtil;
+import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.TokenDto;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.chat.chattingserver.dto.UserDto;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -18,19 +18,30 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AuthServiceTest {
-    AuthService authService;
 
-    @BeforeEach
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private UserService userService;
+    private final String userName = "testUser";
+
+    @BeforeAll
     void setUp() {
-        authService = new AuthService();
+        userService.Register(UserDto.UserInfoRequest.builder()
+                        .name(userName)
+                        .password(userName + "1234")
+                        .userId(userName)
+                .build());
     }
 
     @Test
     @DisplayName("generateToken")
     void signIn()
     {
-        TokenDto tokenTest = authService.generateToken("testuser", UserRole.NORMAL);
+        User user = userService.FindUserByID(userName);
+        TokenDto tokenTest = authService.generateToken(user);
         assertThat(tokenTest.getAccessToken()).isInstanceOf(String.class);
         assertThat(tokenTest.getRefreshToken()).isInstanceOf(String.class);
 
@@ -45,7 +56,8 @@ public class AuthServiceTest {
     @DisplayName("generateToken then reissueToken token")
     void reissueToken()
     {
-        TokenDto tokenTest = authService.generateToken("testuser", UserRole.NORMAL);
+        User user = userService.FindUserByID(userName);
+        TokenDto tokenTest = authService.generateToken(user);
         assertThat(tokenTest.getAccessToken()).isInstanceOf(String.class);
         assertThat(tokenTest.getRefreshToken()).isInstanceOf(String.class);
 

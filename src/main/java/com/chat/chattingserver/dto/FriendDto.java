@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 public class FriendDto {
@@ -18,6 +18,8 @@ public class FriendDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
+        @NotNull
+        @Schema(description = "User Id", nullable = false, example = "test_user")
         private String userId;
     }
 
@@ -26,86 +28,74 @@ public class FriendDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
-        private List<UserDto.Response> friends;
+        private List<UserDto.UserInfo> friends;
     }
 
-    public static class Add {
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class AddRequest {
 
-        @Builder
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class Request {
+        @Schema(description = "Friend ID", nullable = false, example = "1")
+        private Long friendId;
 
-            @Schema(description = "User ID", nullable = true, example = "test_friend2")
-            private String userId;
-
-            @Schema(description = "Friend ID", nullable = false, example = "1")
-            private Long friendId;
-
-            @Schema(description = "Friend Name", nullable = false, example = "test_name")
-            private String friendName;
-        }
-
-        @Builder
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class Response {
-            private Long FriendId;
-            private String friendName;
-        }
+        @Schema(description = "Friend Name", nullable = false, example = "test_name")
+        private String friendName;
     }
 
-    public static class Delete {
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class AddResponse {
 
-        @Builder
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class Request
-        {
-            @Schema(description = "User ID", nullable = false, example = "userId")
-            private String userId;
+        private Long FriendId;
+        private String friendName;
+    }
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteRequest {
+        @Schema(description = "Friend ID", nullable = false, example = "1")
+        private Long friendId;
 
-            @Schema(description = "Friend ID", nullable = false, example = "1")
-            private Long friendId;
-        }
-
-        @Builder
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class Response
-        {
-            private String message;
-        }
     }
 
-    public static class Modify {
-        @Builder
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class Request {
-            private long friendId;
-            private String userId;
-            private String friendName;
-        }
-        @Builder
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class Response {
-            private String message;
-        }
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteResponse {
+        private String message;
+    }
 
 
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ModifyRequest {
+
+        @Schema(description = "Friend Id", nullable = false, example = "1")
+        private long friendId;
+
+        @Schema(description = "Friend Name", nullable = false, example = "test_friend")
+        private String friendName;
+    }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ModifyResponse {
+        private String message;
     }
 }

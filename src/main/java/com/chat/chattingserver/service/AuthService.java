@@ -19,18 +19,18 @@ import java.util.Date;
 public class AuthService {
     private final UserRepository userRepository;
 
-    public TokenDto generateToken(String accountId, UserRole userRole) {
+    public TokenDto generateToken(User user) {
 
         //accountId 암호화
         String encryptedUserId;
         try{
-            encryptedUserId = SecurityUtil.encryptAES256(accountId);
+            encryptedUserId = SecurityUtil.encryptAES256(user.getUserId());
         } catch (Exception e) {
             throw new AuthenticationException(e);
         }
 
         //토큰 생성
-        TokenDto token = JwtUtil.generate(encryptedUserId, userRole.name());
+        TokenDto token = JwtUtil.generate(encryptedUserId, user.getUserRole().toString());
 
         //refreshToken 정보 Redis에 만료시간을 설정해서 저장 (key:encryptedUserId, value:refreshToken)
         //키에 이미 값이 있으면 덮어 쓴다

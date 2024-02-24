@@ -42,7 +42,7 @@ public class RoomService {
 
         room = this.roomRepository.save(room);
 
-        for (UserDto.Response user : request.getParticipants()) {
+        for (RoomDto.ParticipantInfo user : request.getParticipants()) {
             Participant participant = new Participant();
             User participantUser = userRepository.findByUserId(user.getUserId()).orElse(null);
             participant.setRoom(room);

@@ -1,8 +1,8 @@
 package com.chat.chattingserver.controller;
 
 import com.chat.chattingserver.common.util.QueryParserUtil;
-import com.chat.chattingserver.dto.ChatMessageDto;
-import com.chat.chattingserver.dto.ChatOnMessageDto;
+import com.chat.chattingserver.dto.ChatDto;
+import com.chat.chattingserver.dto.WebSocketInterfaceChatDto;
 import com.chat.chattingserver.service.AuthService;
 import com.chat.chattingserver.service.chat.ChattingRoomManager;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -63,13 +63,13 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
-        ChatMessageDto<?> chatMessageDto = mapper.readValue(payload, new TypeReference<ChatMessageDto<?>>() {});
+        WebSocketInterfaceChatDto<?> chatWebSocketInterfaceDto = mapper.readValue(payload, new TypeReference<WebSocketInterfaceChatDto<?>>() {});
 
-        log.info("chatType : {}", chatMessageDto.getType());
+        log.info("chatType : {}", chatWebSocketInterfaceDto.getType());
 
-        switch (chatMessageDto.getType()) {
+        switch (chatWebSocketInterfaceDto.getType()) {
             case ONMESSAGE:
-                ChatOnMessageDto onMessage = mapper.readValue(mapper.writeValueAsString(chatMessageDto.getPayload()), ChatOnMessageDto.class);
+                ChatDto.ChatMessageCreateRequest onMessage = mapper.readValue(mapper.writeValueAsString(chatWebSocketInterfaceDto.getPayload()), ChatDto.ChatMessageCreateRequest.class);
                 log.info("onMessage ChatType : {}, Message: {}", onMessage.getType(), onMessage.getMessage());
                 chattingRoomManager.onMessage(session, onMessage.getMessage(), onMessage.getRoomId());
                 break;
