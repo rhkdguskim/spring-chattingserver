@@ -27,7 +27,7 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeHttpRequests()
-            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/auth/**", "/api/user/register/**").permitAll()
+            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/auth/**", "/api/user/register/**", "/ws/chat/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

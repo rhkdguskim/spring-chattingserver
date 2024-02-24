@@ -1,5 +1,7 @@
 package com.chat.chattingserver.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.Column;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -13,6 +15,7 @@ public class ChatDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class ChatMessageRequest
     {
         private Long roomId;
@@ -25,6 +28,7 @@ public class ChatDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class ChatMessageCreateRequest
     {
         private Long roomId;
@@ -37,6 +41,7 @@ public class ChatDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class ChatMessageResponse
     {
         private Long id;

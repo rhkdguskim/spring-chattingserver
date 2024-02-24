@@ -1,5 +1,9 @@
 package com.chat.chattingserver.common.aop.annotation;
 
+
+import lombok.Getter;
+
+
 public enum RoomType {
     INDIVIDUAL("individual"),
     FRIEND("friend");

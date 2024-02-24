@@ -2,16 +2,22 @@ package com.chat.chattingserver.service;
 
 
 import com.chat.chattingserver.common.aop.annotation.UserRole;
+import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.TokenDto;
 import com.chat.chattingserver.common.exception.error.auth.AuthenticationException;
 import com.chat.chattingserver.common.util.JwtUtil;
 import com.chat.chattingserver.common.util.SecurityUtil;
+import com.chat.chattingserver.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
+    private final UserRepository userRepository;
 
     public TokenDto generateToken(String accountId, UserRole userRole) {
 
@@ -58,5 +64,11 @@ public class AuthService {
         //redisTemplate.opsForValue().set(encryptedUserIdByToken, token.getRefreshToken(), Duration.ofSeconds(refreshTokenValidTime));
 
         return token;
+    }
+
+    public User validate(String token)
+    {
+        Authentication authentication = JwtUtil.validate(token);
+        return userRepository.findByUserId(authentication.getName()).orElseThrow(() -> new RuntimeException("no User"));
     }
 }

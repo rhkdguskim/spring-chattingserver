@@ -1,6 +1,7 @@
 package com.chat.chattingserver.service;
 
 import com.chat.chattingserver.domain.Chat;
+import com.chat.chattingserver.domain.ChatMessage;
 import com.chat.chattingserver.domain.Room;
 import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.ChatDto;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class ChatService {
         this.chatRepository = chatRepository;
     }
 
-    public ChatDto.ChatMessageResponse CreateChatMessage(ChatDto.ChatMessageCreateRequest request)
+    public ChatMessage CreateChatMessage(ChatDto.ChatMessageCreateRequest request)
     {
         User user = userRepository.findByUserId(request.getUserId()).orElseThrow(() -> new RuntimeException("there is no User"));
         Room room = roomRepository.findById(request.getRoomId()).orElse(null);
@@ -45,21 +47,14 @@ public class ChatService {
         chat.setRoom(room);
         chat.setMessage(request.getMessage());
         chat = chatRepository.save(chat);
-
-        return ChatDto.ChatMessageResponse.builder()
-                .id(chat.getId())
-                .roomName(chat.getRoom().getRoomName())
-                .userName(chat.getUser().getName())
-                .message(chat.getMessage())
-                .createdAt(chat.getCreatedAt())
-                .updatedAt(chat.getUpdatedAt())
-                .build();
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(chat, ChatMessage.class);
     }
 
-    public List<ChatDto.ChatMessageResponse> GetChatMessageByCursor(ChatDto.ChatMessageRequest request)
+    public List<ChatMessage> GetChatMessageByCursor(ChatDto.ChatMessageRequest request)
     {
         PageRequest page = PageRequest.of(0, MAX_CHATTING_CNT, Sort.by(Sort.Direction.DESC, "id"));
-        return chatRepository.getChattings(request.getRoomId(), request.getCursor(), page).getContent();
+        return chatRepository.getChattings(request.getRoomId(), request.getCursor(), page).getContent().reversed();
     }
 
 }

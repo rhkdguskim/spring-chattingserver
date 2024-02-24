@@ -2,17 +2,13 @@ package com.chat.chattingserver.service;
 
 
 import com.chat.chattingserver.common.aop.annotation.RoomType;
-import com.chat.chattingserver.dto.ChatDto;
 import com.chat.chattingserver.dto.RoomDto;
 import com.chat.chattingserver.dto.UserDto;
-import com.chat.chattingserver.service.chat.ChattingService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

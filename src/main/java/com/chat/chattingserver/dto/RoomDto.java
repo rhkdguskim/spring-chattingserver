@@ -1,6 +1,8 @@
 package com.chat.chattingserver.dto;
 
 import com.chat.chattingserver.common.aop.annotation.RoomType;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
 import java.time.Instant;
@@ -12,6 +14,7 @@ public class RoomDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class RoomRequest
     {
         private String userId;
@@ -22,6 +25,7 @@ public class RoomDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class RoomResponse
     {
         private Long roomId;
@@ -38,6 +42,7 @@ public class RoomDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class AddRequest
     {
         private String roomName;
@@ -50,6 +55,7 @@ public class RoomDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class AddResponse
     {
         private Long roomId;

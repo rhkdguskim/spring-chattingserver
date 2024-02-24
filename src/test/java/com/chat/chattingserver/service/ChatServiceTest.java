@@ -3,7 +3,7 @@ package com.chat.chattingserver.service;
 import com.chat.chattingserver.dto.ChatDto;
 import com.chat.chattingserver.dto.RoomDto;
 import com.chat.chattingserver.dto.UserDto;
-import com.chat.chattingserver.service.chat.ChattingService;
+import lombok.extern.log4j.Log4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,8 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ChatServiceTest {
-
-    private final Logger logger = LoggerFactory.getLogger(ChattingService.class.getName());
     private final static String userId = "TestUser";
     private final static String roomName = "TestRoom";
     private final static String message = "TestMessage";
@@ -49,7 +47,8 @@ public class ChatServiceTest {
                 .build();
         UserDto.Response createdUser = userService.Register(user);
 
-        logger.info(createdUser.toString());
+
+
 
         ArrayList<UserDto.Response> participants = new ArrayList<>();
         participants.add(createdUser);
@@ -65,18 +64,6 @@ public class ChatServiceTest {
                 .userId(userId)
                 .build());
 
-        logger.info(createdRoom.toString());
-
-        for (int i = 0; i < chattingCnt; i ++)
-        {
-            for (RoomDto.RoomResponse r : createdRoom) {
-                logger.info(chatService.CreateChatMessage(ChatDto.ChatMessageCreateRequest.builder()
-                        .roomId(r.getRoomId())
-                        .message(message + i)
-                        .userId(createdUser.getUserId())
-                        .build()).toString());
-            }
-        }
     }
 
     @Test

@@ -57,6 +57,9 @@ private final UserRepository userRepository;
         Room room = new Room();
         ArrayList<Participant> participants = new ArrayList<>();
         room.setRoomName(request.getRoomName());
+//        if (request.getParticipants().size() >= 2)  {
+//            room.setType(RoomType.FRIEND);
+//        }
         room = this.roomRepository.save(room);
 
         for (UserDto.Response user : request.getParticipants()) {
@@ -66,10 +69,6 @@ private final UserRepository userRepository;
             participant.setUser(participantUser);
             participant.setRoomName(request.getRoomName());
             participants.add(participantRepository.save(participant));
-        }
-
-        if (request.getParticipants().size() >= 2)  {
-            room.setType(RoomType.FRIEND);
         }
 
         List<UserDto.Response> users = participants.stream().map(p -> {
