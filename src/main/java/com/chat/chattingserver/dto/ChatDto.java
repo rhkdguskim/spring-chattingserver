@@ -2,9 +2,7 @@ package com.chat.chattingserver.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import jakarta.persistence.Column;
 import lombok.*;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
 
@@ -51,6 +49,5 @@ public class ChatDto {
         private Instant createdAt;
         private Instant updatedAt;
     }
-
 
 }

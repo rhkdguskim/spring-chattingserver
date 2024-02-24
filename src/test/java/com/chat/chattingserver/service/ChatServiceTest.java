@@ -1,5 +1,7 @@
 package com.chat.chattingserver.service;
 
+import com.chat.chattingserver.domain.Room;
+import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.ChatDto;
 import com.chat.chattingserver.dto.RoomDto;
 import com.chat.chattingserver.dto.UserDto;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,6 +33,10 @@ public class ChatServiceTest {
     private final static String userId = "TestUser";
     private final static String roomName = "TestRoom";
     private final static String message = "TestMessage";
+
+
+    @Autowired
+    private ModelMapper modelMapper;
     private final int chattingCnt = 500;
     @Autowired
     private UserService userService;
@@ -45,22 +53,26 @@ public class ChatServiceTest {
                 .password("test1234")
                 .userId(userId)
                 .build();
-        UserDto.Response createdUser = userService.Register(user);
+        User createdUser = userService.Register(user);
 
 
 
 
-        ArrayList<UserDto.Response> participants = new ArrayList<>();
+        ArrayList<User> participants = new ArrayList<>();
         participants.add(createdUser);
+
+        List<UserDto.Response> targetUser = participants.stream().map((participant) -> {
+            return modelMapper.map(participant, UserDto.Response.class);
+        }).collect(Collectors.toList());
 
         RoomDto.AddRequest request = RoomDto.AddRequest.builder()
                 .roomName(roomName)
-                .participants(participants)
+                .participants(targetUser)
                 .build();
 
-        RoomDto.AddResponse room = roomService.CreateRoom(request);
+        Room room = roomService.CreateRoom(request);
 
-        List<RoomDto.RoomResponse> createdRoom = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
+        List<Room> createdRoom = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
                 .userId(userId)
                 .build());
 
@@ -81,7 +93,7 @@ public class ChatServiceTest {
         {
             var chattings = chatService.GetChatMessageByCursor(ChatDto.ChatMessageRequest.builder()
                     .cursor(cursor)
-                    .roomId(rooms.getFirst().getRoomId())
+                    .roomId(rooms.getFirst().getId())
                     .build());
 
             for(var chat : chattings)

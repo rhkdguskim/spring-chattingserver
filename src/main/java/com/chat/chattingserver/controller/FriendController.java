@@ -4,6 +4,7 @@ import com.chat.chattingserver.common.dto.CommonResponse;
 import com.chat.chattingserver.dto.FriendDto;
 import com.chat.chattingserver.service.FriendService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +19,9 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @Tag(name="Friend Controller", description = "Friend Controller API")
 @RequestMapping("/api/friend")
+@RequiredArgsConstructor
 public class FriendController {
-
-    private final Logger logger = LoggerFactory.getLogger(FriendController.class.getName());
     private final FriendService friendService;
-    @Autowired
-    FriendController(FriendService friendService)
-    {
-        this.friendService = friendService;
-    }
     @GetMapping("")
     public ResponseEntity<CommonResponse> GetMyFriends(@AuthenticationPrincipal UserDetails userDetails)
     {

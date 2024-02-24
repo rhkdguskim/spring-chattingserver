@@ -26,21 +26,9 @@ public class ChattingRoomManager {
 
     public void onConnect(WebSocketSession session, User user)
     {
-        List<RoomDto.RoomResponse> rooms = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
+        List<Room> roomList = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
                 .userId(user.getUserId())
                 .build());
-
-        List<Room> roomList = rooms.stream().map((room) -> {
-            Room new_room = new Room();
-            new_room.setId(room.getRoomId());
-            new_room.setRoomName(room.getRoomName());
-            new_room.setLastChat(room.getLastChat());
-            new_room.setType(room.getRoomType());
-            new_room.setParticipants(room.getParticipants().stream().map((participant)-> {
-                return new com.chat.chattingserver.domain.Participant();
-            }).collect(Collectors.toList()));
-            return new_room;
-        }).collect(Collectors.toList());
 
         SessionData data = SessionData.builder()
                 .user(user)

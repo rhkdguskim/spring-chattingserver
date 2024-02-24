@@ -7,40 +7,24 @@ import com.chat.chattingserver.dto.FriendDto;
 import com.chat.chattingserver.dto.UserDto;
 import com.chat.chattingserver.repository.FriendRepository;
 import com.chat.chattingserver.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class FriendService {
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
-    @Autowired
-    public FriendService(FriendRepository friendRepository, UserRepository userRepository) {
-        this.friendRepository = friendRepository;
-        this.userRepository = userRepository;
-    }
-
-    public FriendDto.Response getFriends(FriendDto.Request request)
+    public List<User> getFriends(FriendDto.Request request)
     {
-        List<User> users = friendRepository.getUserFriends(request.getUserId()).orElseThrow(() -> new RuntimeException("no Friends founded"));
-
-        List<UserDto.Response> friends = users.stream().map(user-> UserDto.Response.builder()
-                .role(user.getUserRole())
-                .userId(user.getUserId())
-                .id(user.getId())
-                .statusMsg(user.getStatusMessage())
-                .name(user.getName())
-                .build()).toList();
-
-        return FriendDto.Response
-                .builder()
-                .friends(friends)
-                .build();
+        return friendRepository.getUserFriends(request.getUserId()).orElseThrow(() -> new RuntimeException("no Friends founded"));
     }
-
-    public FriendDto.Add.Response addFriend(FriendDto.Add.Request request)
+    public Friend addFriend(FriendDto.Add.Request request)
     {
         User user = userRepository.findByUserId(request.getUserId()).orElseThrow(() -> new RuntimeException("user not exists"));
 
@@ -48,11 +32,7 @@ public class FriendService {
         new_friend.setFriend_id(request.getFriendId());
         new_friend.setFriend_name(request.getFriendName());
         new_friend.setUser(user);
-        new_friend = this.friendRepository.save(new_friend);
-        return FriendDto.Add.Response.builder()
-                .FriendId(new_friend.getFriend_id())
-                .friendName(new_friend.getFriend_name())
-                .build();
+        return this.friendRepository.save(new_friend);
     }
 
     public boolean delFriend(FriendDto.Delete.Request request)

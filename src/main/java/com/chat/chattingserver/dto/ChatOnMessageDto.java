@@ -17,11 +17,3 @@ public class ChatOnMessageDto {
     private String message;
     private Long roomId;
 }
-
-//{
-//        "type": "ONMESSAGE",
-//        "payload": {
-//        "type" : "TEXT",
-//        "message": "hi"
-//        }
-//        }

@@ -35,7 +35,7 @@ public class UserServiceTest {
                 .password("test1234")
                 .userId(userId)
                 .build();
-        UserDto.Response createdUser = userService.Register(user);
+        User createdUser = userService.Register(user);
 
         assertThat(createdUser).isNotNull();
     }

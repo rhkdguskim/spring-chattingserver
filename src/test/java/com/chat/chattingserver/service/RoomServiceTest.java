@@ -2,6 +2,8 @@ package com.chat.chattingserver.service;
 
 
 import com.chat.chattingserver.common.aop.annotation.RoomType;
+import com.chat.chattingserver.domain.Room;
+import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.RoomDto;
 import com.chat.chattingserver.dto.UserDto;
 import org.junit.jupiter.api.BeforeAll;
@@ -56,7 +58,7 @@ public class RoomServiceTest {
     @DisplayName("createRoom")
     public void CreateRoom()
     {
-        List<UserDto.Response> users = userService.GetUsers();
+        List<User> users = userService.GetUsers();
         ArrayList<UserDto.Response> participants = new ArrayList<>();
 
         for(var user : users)
@@ -73,14 +75,14 @@ public class RoomServiceTest {
                 .participants(participants)
                 .build();
 
-        RoomDto.AddResponse room = roomService.CreateRoom(request);
+        Room room = roomService.CreateRoom(request);
 
         assertThat(room.getRoomName()).isEqualTo(roomName);
-        assertThat(room.getRoomType()).isEqualTo(RoomType.FRIEND);
+        assertThat(room.getType()).isEqualTo(RoomType.FRIEND);
         assertThat(room.getParticipants().size()).isEqualTo(2);
 
 
-        List<RoomDto.RoomResponse> createdRoom = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
+        List<Room> createdRoom = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
                 .userId(userId)
                 .build());
     }
@@ -89,20 +91,20 @@ public class RoomServiceTest {
     @DisplayName("FindRoom")
     public void FindRoom()
     {
-        List<RoomDto.RoomResponse> createdRoom = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
+        List<Room> createdRoom = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
                 .userId(userId)
                 .build());
 
         assertThat(createdRoom.getFirst().getRoomName()).isEqualTo(roomName);
-        assertThat(createdRoom.getFirst().getRoomType()).isEqualTo(RoomType.FRIEND);
+        assertThat(createdRoom.getFirst().getType()).isEqualTo(RoomType.FRIEND);
         assertThat(createdRoom.getFirst().getParticipants().size()).isEqualTo(2);
 
-        List<RoomDto.RoomResponse> createdRoom2 = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
+        List<Room> createdRoom2 = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
                 .userId(userId2)
                 .build());
 
         assertThat(createdRoom2.getFirst().getRoomName()).isEqualTo(roomName);
-        assertThat(createdRoom2.getFirst().getRoomType()).isEqualTo(RoomType.FRIEND);
+        assertThat(createdRoom2.getFirst().getType()).isEqualTo(RoomType.FRIEND);
         assertThat(createdRoom2.getFirst().getParticipants().size()).isEqualTo(2);
     }
 

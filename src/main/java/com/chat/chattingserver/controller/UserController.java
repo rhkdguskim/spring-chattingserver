@@ -3,6 +3,7 @@ import com.chat.chattingserver.common.dto.CommonResponse;
 import com.chat.chattingserver.dto.UserDto;
 import com.chat.chattingserver.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +18,11 @@ import org.springframework.http.HttpStatus;
 @Slf4j
 @Tag(name = "User Controller", description = "User Controller API")
 @RequestMapping("/api/user")
+@RequiredArgsConstructor
 public class UserController {
-    private final Logger logger = LoggerFactory.getLogger(UserController.class.getName());
+
     private final UserService userService;
 
-    @Autowired
-    UserController(UserService userService)
-    {
-        this.userService = userService;
-    }
     @GetMapping("/")
     public ResponseEntity<CommonResponse> GetAllUsers() {
         CommonResponse response = CommonResponse.builder()

@@ -2,6 +2,8 @@ package com.chat.chattingserver.service;
 
 
 import java.util.List;
+
+import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.FriendDto;
 import com.chat.chattingserver.dto.UserDto;
 import org.junit.jupiter.api.*;
@@ -42,7 +44,7 @@ public class FriendServiceTest {
     @DisplayName("addFriend")
     public void addFriend()
     {
-        List<UserDto.Response> user = userService.GetUsers();
+        List<User> user = userService.GetUsers();
         for(var user1 : user)
         {
             for(var user2 : user)
@@ -67,11 +69,11 @@ public class FriendServiceTest {
     {
         addFriend();
 
-        List<UserDto.Response> user = userService.GetUsers();
+        List<User> user = userService.GetUsers();
         user.forEach(u1 -> {
             FriendDto.Request request = FriendDto.Request.builder().userId(u1.getUserId()).build();
-            FriendDto.Response response = friendService.getFriends(request);
-            assertThat(response.getFriends().size()).isEqualTo(USER_CNT-1);
+            List<User> users = friendService.getFriends(request);
+            assertThat(users.size()).isEqualTo(USER_CNT-1);
         });
     }
 
@@ -79,13 +81,13 @@ public class FriendServiceTest {
     @DisplayName("delFriends")
     public void delFriends()
     {
-        List<UserDto.Response> user = userService.GetUsers();
+        List<User> user = userService.GetUsers();
 
         user.forEach(u1 -> {
             FriendDto.Request request = FriendDto.Request.builder().userId(u1.getUserId()).build();
-            FriendDto.Response response = friendService.getFriends(request);
+            List<User> users = friendService.getFriends(request);
 
-            response.getFriends().forEach(friend -> {
+            users.forEach(friend -> {
                 FriendDto.Delete.Request delRequest = FriendDto.Delete.Request.builder()
                         .userId(u1.getUserId())
                         .friendId(friend.getId())
@@ -101,13 +103,13 @@ public class FriendServiceTest {
     public void modFriends()
     {
 
-        List<UserDto.Response> user = userService.GetUsers();
+        List<User> user = userService.GetUsers();
 
         user.forEach(u1 -> {
             FriendDto.Request request = FriendDto.Request.builder().userId(u1.getUserId()).build();
-            FriendDto.Response response = friendService.getFriends(request);
+            List<User> users = friendService.getFriends(request);
 
-            response.getFriends().forEach(friend -> {
+            users.forEach(friend -> {
                 FriendDto.Modify.Request modRequest = FriendDto.Modify.Request.builder()
                         .friendId(friend.getId())
                         .userId(u1.getUserId())

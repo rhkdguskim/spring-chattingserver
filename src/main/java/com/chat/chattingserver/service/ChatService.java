@@ -8,6 +8,7 @@ import com.chat.chattingserver.dto.ChatDto;
 import com.chat.chattingserver.repository.ChatRepository;
 import com.chat.chattingserver.repository.RoomRepository;
 import com.chat.chattingserver.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,18 +20,14 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ChatService {
     private final int MAX_CHATTING_CNT = 50;
+
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final ChatRepository chatRepository;
-
-    @Autowired
-    public ChatService(UserRepository userRepository, RoomRepository roomRepository, ChatRepository chatRepository) {
-        this.userRepository = userRepository;
-        this.roomRepository = roomRepository;
-        this.chatRepository = chatRepository;
-    }
+    private final ModelMapper modelMapper;
 
     public ChatMessage CreateChatMessage(ChatDto.ChatMessageCreateRequest request)
     {
@@ -47,7 +44,6 @@ public class ChatService {
         chat.setRoom(room);
         chat.setMessage(request.getMessage());
         chat = chatRepository.save(chat);
-        ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(chat, ChatMessage.class);
     }
 

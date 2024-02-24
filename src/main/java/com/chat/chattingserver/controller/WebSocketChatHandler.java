@@ -29,18 +29,37 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     @Autowired
     private final ChattingRoomManager chattingRoomManager;
     private final AuthService authService;
+
+    /**
+     * 소켓 연결시
+     * @param session
+     * @throws Exception
+     */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        log.info("{} 연결됨", session.getId());
+        log.info("{} Established", session.getId());
+
         URI uri = session.getUri();
+
         if (uri != null) {
             String query = uri.getQuery();
             Map<String, String> queryParams = QueryParserUtil.parseQueryParams(query);
+
             String token = queryParams.get("token");
             chattingRoomManager.onConnect(session, authService.validate(token));
+            log.info("{} Connected", session.getId());
+        }
+        else {
+            session.close(CloseStatus.NOT_ACCEPTABLE);
         }
     }
 
+    /**
+     * 소켓 연결후 메세지 전송시, 추후 이미지, 동영상 전송등을 위한 분리구현
+     * @param session
+     * @param message
+     * @throws Exception
+     */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
@@ -62,9 +81,15 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         }
     }
 
+    /**
+     * 연결 종료시에
+     * @param session
+     * @param status
+     * @throws Exception
+     */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        log.info("{} 연결끊김", session.getId());
         chattingRoomManager.onDisconnect(session);
+        log.info("{} Disconnected", session.getId());
     }
 }
