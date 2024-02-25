@@ -1,10 +1,17 @@
 package com.chat.chattingserver.common.exception.error.user;
 
 import com.chat.chattingserver.common.exception.error.ExceptionInterface;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
+@Setter
+@Getter
 public class UserException extends RuntimeException implements ExceptionInterface {
     private final ErrorCode code;
+    private String userId;
+    private String password;
 
     public enum ErrorCode
     {
@@ -22,10 +29,10 @@ public class UserException extends RuntimeException implements ExceptionInterfac
     @Override
     public String getMessage() {
         return switch (code) {
-            case USER_ALREADY_EXIST -> "User Already Exist";
-            case INVALID_USER -> "Invalid User";
-            case WRONG_PASSWORD -> "Wrong Password";
-            case NO_USER_FOUNED -> "No User Founed";
+            case USER_ALREADY_EXIST -> userId + "is already Exist";
+            case INVALID_USER -> userId + " is invalid user";
+            case WRONG_PASSWORD -> password + "is wrong password";
+            case NO_USER_FOUNED -> "There in no" + userId + "id";
         };
     }
 

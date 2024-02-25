@@ -48,6 +48,7 @@ public class UserDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class LoginRequest {
 
         @NotNull
