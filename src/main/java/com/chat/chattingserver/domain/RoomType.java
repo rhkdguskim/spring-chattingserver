@@ -1,4 +1,4 @@
-package com.chat.chattingserver.common.aop.annotation;
+package com.chat.chattingserver.domain;
 
 
 import lombok.Getter;

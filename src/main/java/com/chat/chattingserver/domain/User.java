@@ -1,7 +1,6 @@
 package com.chat.chattingserver.domain;
 
 
-import com.chat.chattingserver.common.aop.annotation.UserRole;
 import com.chat.chattingserver.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

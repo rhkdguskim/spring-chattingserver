@@ -1,7 +1,7 @@
 package com.chat.chattingserver.dto;
 
 
-import com.chat.chattingserver.common.aop.annotation.ChatMessageType;
+import com.chat.chattingserver.domain.ChatMessageType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;

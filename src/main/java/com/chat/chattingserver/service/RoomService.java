@@ -1,11 +1,10 @@
 package com.chat.chattingserver.service;
 
-import com.chat.chattingserver.common.aop.annotation.RoomType;
+import com.chat.chattingserver.domain.RoomType;
 import com.chat.chattingserver.domain.Participant;
 import com.chat.chattingserver.domain.Room;
 import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.RoomDto;
-import com.chat.chattingserver.dto.UserDto;
 import com.chat.chattingserver.repository.ParticipantRepository;
 import com.chat.chattingserver.repository.RoomRepository;
 import com.chat.chattingserver.repository.UserRepository;

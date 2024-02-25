@@ -90,6 +90,7 @@ public class UserServiceTest {
                     .userId(userId)
                     .password(userPassword + "1")
                     .build());
+            fail();
         } catch (UserException e)
         {
             assertThat(e.getCode()).isEqualTo(UserException.ErrorCode.WRONG_PASSWORD.toString());
@@ -107,6 +108,7 @@ public class UserServiceTest {
 
         try {
             userService.FindUserByID(userId + "test");
+            fail();
         } catch (UserException e) {
             assertThat(e.getCode()).isEqualTo(UserException.ErrorCode.NO_USER_FOUNED.toString());
         }

@@ -1,7 +1,6 @@
 package com.chat.chattingserver.domain;
 
 
-import com.chat.chattingserver.common.aop.annotation.RoomType;
 import com.chat.chattingserver.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;

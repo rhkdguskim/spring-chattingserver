@@ -1,7 +1,7 @@
 package com.chat.chattingserver.service;
 
 
-import com.chat.chattingserver.common.aop.annotation.RoomType;
+import com.chat.chattingserver.domain.RoomType;
 import com.chat.chattingserver.domain.Room;
 import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.RoomDto;

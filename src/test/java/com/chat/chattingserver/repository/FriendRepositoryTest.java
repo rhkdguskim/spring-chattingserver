@@ -1,6 +1,6 @@
 package com.chat.chattingserver.repository;
 
-import com.chat.chattingserver.common.aop.annotation.UserRole;
+import com.chat.chattingserver.domain.UserRole;
 import com.chat.chattingserver.domain.Friend;
 import com.chat.chattingserver.domain.User;
 import org.junit.jupiter.api.DisplayName;

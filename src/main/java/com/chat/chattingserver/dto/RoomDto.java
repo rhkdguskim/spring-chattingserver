@@ -1,6 +1,6 @@
 package com.chat.chattingserver.dto;
 
-import com.chat.chattingserver.common.aop.annotation.RoomType;
+import com.chat.chattingserver.domain.RoomType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
