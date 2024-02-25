@@ -1,6 +1,6 @@
 package com.chat.chattingserver.service;
 
-import com.chat.chattingserver.common.exception.error.auth.AuthenticationException;
+import com.chat.chattingserver.common.exception.error.auth.AuthException;
 import com.chat.chattingserver.common.util.JwtUtil;
 import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.TokenDto;
@@ -47,7 +47,7 @@ public class AuthServiceTest {
 
         JwtUtil.validate(tokenTest.getAccessToken());
 
-        assertThrows(AuthenticationException.class, () -> {
+        assertThrows(AuthException.class, () -> {
             JwtUtil.validate("accesstokenmocking!@#$%^&*(");
         });
     }
@@ -66,7 +66,7 @@ public class AuthServiceTest {
         assertThat(newTokenTest.getRefreshToken()).isInstanceOf(String.class);
 
 
-        assertThrows(AuthenticationException.class, () -> {
+        assertThrows(AuthException.class, () -> {
             authService.reissueToken("mockingrefreshToken^%$^45645645$");
         });
     }

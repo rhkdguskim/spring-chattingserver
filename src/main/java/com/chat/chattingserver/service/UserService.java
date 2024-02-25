@@ -1,8 +1,6 @@
 package com.chat.chattingserver.service;
 
-import com.chat.chattingserver.common.exception.error.user.UserAlreadyExistException;
-import com.chat.chattingserver.common.exception.error.user.UserInvalidException;
-import com.chat.chattingserver.common.exception.error.user.UserPasswordException;
+import com.chat.chattingserver.common.exception.error.user.UserException;
 import com.chat.chattingserver.common.util.SecurityUtil;
 import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.UserDto;
@@ -28,7 +26,7 @@ public class UserService {
     {
         if(userRepository.existsUserByUserId(userRegisterUserInfoRequest.getUserId()))
         {
-            throw new UserAlreadyExistException();
+            throw new UserException(UserException.ErrorCode.USER_ALREADY_EXIST);
         }
 
         User user = new User();
@@ -45,7 +43,7 @@ public class UserService {
 
         if(!user.getPassword().equals(SecurityUtil.encryptSHA256(userLoginRequest.getPassword())))
         {
-            throw new UserPasswordException();
+            throw new UserException(UserException.ErrorCode.WRONG_PASSWORD);
         }
 
         return user;
@@ -63,7 +61,7 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByUserId(userid);
         if(userOptional.isEmpty())
         {
-            throw new UserInvalidException();
+            throw new UserException(UserException.ErrorCode.NO_USER_FOUNED);
         }
 
         return userOptional.get();

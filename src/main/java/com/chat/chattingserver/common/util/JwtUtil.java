@@ -1,6 +1,6 @@
 package com.chat.chattingserver.common.util;
 
-import com.chat.chattingserver.common.exception.error.auth.AuthenticationException;
+import com.chat.chattingserver.common.exception.error.auth.AuthException;
 import com.chat.chattingserver.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -90,7 +90,7 @@ public class JwtUtil {
             Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
             Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
             if (claims.get("userRole") == null || claims.get("userId") == null) {
-                throw new AuthenticationException("Authorization Error");
+                throw new AuthException(AuthException.ErrorCode.INVALID_TOKEN);
             }
 
             // 클레임에서 권한 정보 가져오기
@@ -102,14 +102,14 @@ public class JwtUtil {
             // UserDetails 객체를 만들어서 Authentication 리턴
             UserDetails principal = new User(SecurityUtil.decryptAES256(claims.get("userId").toString()), "", authorities);
             return new UsernamePasswordAuthenticationToken(principal, "", authorities);
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) { //서명이 잘못 되었을때
-            throw new AuthenticationException();
-        } catch (ExpiredJwtException e) { //기간이 만료되었을때
-            throw new AuthenticationException();
-        } catch (UnsupportedJwtException e) { //지원하지 않는 JWT 토큰일때
-            throw new AuthenticationException();
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            throw new AuthException(AuthException.ErrorCode.UNSIGN_TOKEN);
+        } catch (ExpiredJwtException e) {
+            throw new AuthException(AuthException.ErrorCode.EXPIRED_JWT);
+        } catch (UnsupportedJwtException e) {
+            throw new AuthException(AuthException.ErrorCode.UNSUPPORTED_JWT);
         } catch (IllegalArgumentException e) {
-            throw new AuthenticationException();
+            throw new AuthException(AuthException.ErrorCode.ILLARGUMENT_JWT);
         }
     }
 
@@ -122,24 +122,9 @@ public class JwtUtil {
         Map<String,Object> jsonArray = jsonParser.parseMap(decodedPayload);
 
         if(!jsonArray.containsKey("userId")){
-            throw new AuthenticationException();
+            throw new AuthException(AuthException.ErrorCode.INVALID_TOKEN);
         }
 
         return jsonArray.get("userId").toString();
-    }
-
-    public static String getUserRole(String token){
-        String payload = token.split("\\.")[1];
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-
-        String decodedPayload = new String(decoder.decode(payload));
-        JsonParser jsonParser = new BasicJsonParser();
-        Map<String,Object> jsonArray = jsonParser.parseMap(decodedPayload);
-
-        if(!jsonArray.containsKey("userRole")){
-            throw new AuthenticationException();
-        }
-
-        return jsonArray.get("userRole").toString();
     }
 }

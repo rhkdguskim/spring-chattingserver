@@ -25,9 +25,9 @@ public class AuthController {
     private final UserService userService;
 
     private final AuthService authService;
-    @PostMapping("/login")
+    @PostMapping("/signin")
     public ResponseEntity<CommonResponse> Register(@RequestBody UserDto.LoginRequest userloginRequest) {
-
+        log.info("hi");
 
         CommonResponse response = CommonResponse.builder()
                 .success(true)
