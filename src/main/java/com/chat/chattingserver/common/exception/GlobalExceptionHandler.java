@@ -18,12 +18,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EncryptException.class)
     protected ResponseEntity<CommonResponse> handleEncryptException(EncryptException ex) {
-        ErrorCode errorCode = ErrorCode.ENCRYPT_EXCEPTION;
-
         ErrorResponse error = ErrorResponse.builder()
-                .status(errorCode.getStatus().value())
-                .message(errorCode.getMessage())
-                .code(errorCode.getCode())
+                .status(ex.getStatus().value())
+                .message(ex.getMessage())
+                .code(ex.getCode())
                 .build();
 
         CommonResponse response = CommonResponse.builder()
@@ -31,7 +29,7 @@ public class GlobalExceptionHandler {
                 .error(error)
                 .build();
 
-        return new ResponseEntity<>(response, errorCode.getStatus());
+        return new ResponseEntity<>(response, ex.getStatus());
     }
 
     @ExceptionHandler(AuthException.class)

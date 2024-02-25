@@ -1,16 +1,39 @@
 package com.chat.chattingserver.common.exception.error.util;
 
-public class EncryptException extends RuntimeException {
-    public EncryptException() {
+import com.chat.chattingserver.common.exception.error.ExceptionInterface;
+import org.springframework.http.HttpStatus;
+
+public class EncryptException extends RuntimeException implements ExceptionInterface {
+    private final ErrorCode code;
+
+    public enum ErrorCode
+    {
+        UNSUPPORTED_ALGORITHM,
+        ENCRYPT_ERROR,
+    }
+
+    public EncryptException(ErrorCode code) {
         super();
+        this.code = code;
     }
-    public EncryptException(String message, Throwable cause) {
-        super(message, cause);
+
+    @Override
+    public String getMessage()
+    {
+        return switch (code) {
+            case UNSUPPORTED_ALGORITHM -> "Unsupported Algorithm";
+            case ENCRYPT_ERROR -> "Encrypt Errror";
+        };
     }
-    public EncryptException(String message) {
-        super(message);
+
+    public HttpStatus getStatus() {
+        return switch (code) {
+            case UNSUPPORTED_ALGORITHM, ENCRYPT_ERROR -> HttpStatus.CONFLICT;
+        };
     }
-    public EncryptException(Throwable cause) {
-        super(cause);
+
+    public String getCode()
+    {
+        return code.toString();
     }
 }
