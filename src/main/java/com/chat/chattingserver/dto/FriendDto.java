@@ -17,6 +17,7 @@ public class FriendDto {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class Request {
         @NotNull
         @Schema(description = "User Id", nullable = false, example = "test_user")
@@ -27,6 +28,7 @@ public class FriendDto {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class Response {
         private List<UserDto.UserInfo> friends;
     }
