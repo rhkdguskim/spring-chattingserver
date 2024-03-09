@@ -1,7 +1,6 @@
 package com.chat.chattingserver.repository;
 import com.chat.chattingserver.domain.Chat;
-import com.chat.chattingserver.domain.ChatMessage;
-import com.chat.chattingserver.dto.ChatDto;
+import com.chat.chattingserver.domain.BroadCastMessage;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,9 +11,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
-    @Query("select new com.chat.chattingserver.domain.ChatMessage(c.id, c.user.name, c.room.roomName, c.message, c.createdAt, c.updatedAt) " +
+    @Query("select new com.chat.chattingserver.domain.BroadCastMessage(c.id, c.user.name, c.room.roomName, c.message, c.createdAt, c.updatedAt) " +
             "from Chat c where c.room.id = :roomId and c.id < :cursor")
-    Slice<ChatMessage> getChattings(@Param("roomId") Long roomId,
-                                    @Param("cursor") Long cursor,
-                                    Pageable pageable);
+    Slice<BroadCastMessage> getChattings(@Param("roomId") Long roomId,
+                                         @Param("cursor") Long cursor,
+                                         Pageable pageable);
 }

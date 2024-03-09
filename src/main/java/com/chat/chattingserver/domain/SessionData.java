@@ -1,9 +1,9 @@
 package com.chat.chattingserver.domain;
 
+import com.chat.chattingserver.service.chatting.UserSession;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.socket.WebSocketSession;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ import java.util.List;
 public class SessionData {
     private User user;
     private List<Room> rooms;
-    private WebSocketSession session;
+    private UserSession session;
 }

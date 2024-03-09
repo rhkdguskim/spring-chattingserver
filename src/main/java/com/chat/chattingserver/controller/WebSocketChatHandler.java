@@ -3,8 +3,9 @@ package com.chat.chattingserver.controller;
 import com.chat.chattingserver.common.util.QueryParserUtil;
 import com.chat.chattingserver.dto.ChatDto;
 import com.chat.chattingserver.dto.WebSocketInterfaceChatDto;
-import com.chat.chattingserver.service.AuthService;
-import com.chat.chattingserver.service.ChattingRoomService;
+import com.chat.chattingserver.service.*;
+import com.chat.chattingserver.service.chatting.ChatMessageProcessor;
+import com.chat.chattingserver.service.chatting.UserSession;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,9 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -25,8 +28,9 @@ import java.util.Map;
 public class WebSocketChatHandler extends TextWebSocketHandler {
 
     private final ObjectMapper mapper;
-    private final ChattingRoomService chattingRoomService;
+    private final ChatMessageProcessor chatMessageProcessor;
     private final AuthService authService;
+    private final Map<WebSocketSession, UserSession> sessions = new HashMap<>();
 
     /**
      * 소켓 연결시
@@ -44,7 +48,9 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             Map<String, String> queryParams = QueryParserUtil.parseQueryParams(query);
 
             String token = queryParams.get("token");
-            chattingRoomService.onConnect(session, authService.validate(token));
+            var userSession = new WebSocketUserSession(session);
+            sessions.put(session, userSession);
+            chatMessageProcessor.onConnect(userSession, authService.validate(token));
             log.info("{} Connected", session.getId());
         }
         else {
@@ -69,7 +75,8 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             case ONMESSAGE:
                 ChatDto.ChatMessageCreateRequest onMessage = mapper.readValue(mapper.writeValueAsString(chatWebSocketInterfaceDto.getPayload()), ChatDto.ChatMessageCreateRequest.class);
                 log.info("onMessage ChatType : {}, Message: {}", onMessage.getType(), onMessage.getMessage());
-                chattingRoomService.onMessage(session, onMessage.getMessage(), onMessage.getRoomId());
+                var userSession = sessions.get(session);
+                chatMessageProcessor.onMessage(userSession, onMessage.getMessage(), onMessage.getRoomId());
                 break;
             default:
             {
@@ -87,7 +94,35 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        chattingRoomService.onDisconnect(session);
+        var userSession = sessions.get(session);
+        chatMessageProcessor.onDisconnect(userSession);
+        sessions.remove(session);
         log.info("{} Disconnected", session.getId());
+    }
+
+    /**
+     * WebsocketSession 래퍼 클래스
+     */
+    private static class WebSocketUserSession implements UserSession {
+        private final WebSocketSession session;
+
+        public WebSocketUserSession(WebSocketSession session)
+        {
+            this.session = session;
+        }
+
+        @Override
+        public void sendMessage(String message) {
+            try {
+                session.sendMessage(new TextMessage(message));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public String getId() {
+            return session.getId();
+        }
     }
 }

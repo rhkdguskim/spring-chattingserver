@@ -1,7 +1,7 @@
 package com.chat.chattingserver.service;
 
 import com.chat.chattingserver.domain.Chat;
-import com.chat.chattingserver.domain.ChatMessage;
+import com.chat.chattingserver.domain.BroadCastMessage;
 import com.chat.chattingserver.domain.Room;
 import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.ChatDto;
@@ -28,7 +28,7 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final ModelMapper modelMapper;
 
-    public ChatMessage createChatMessage(ChatDto.ChatMessageCreateRequest request)
+    public BroadCastMessage.ChatMessage createChatMessage(ChatDto.ChatMessageCreateRequest request)
     {
         User user = userRepository.findByUserId(request.getUserId()).orElseThrow(() -> new RuntimeException("there is no User"));
         Room room = roomRepository.findById(request.getRoomId()).orElse(null);
@@ -43,10 +43,10 @@ public class ChatService {
         chat.setRoom(room);
         chat.setMessage(request.getMessage());
         chat = chatRepository.save(chat);
-        return modelMapper.map(chat, ChatMessage.class);
+        return modelMapper.map(chat, BroadCastMessage.ChatMessage.class);
     }
 
-    public List<ChatMessage> getChatMessageByCursor(ChatDto.ChatMessageRequest request)
+    public List<BroadCastMessage> getChatMessageByCursor(ChatDto.ChatMessageRequest request)
     {
         final int MAX_CHATTING_CNT = 50;
         PageRequest page = PageRequest.of(0, MAX_CHATTING_CNT, Sort.by(Sort.Direction.DESC, "id"));
