@@ -29,7 +29,7 @@ public class AuthServiceTest {
 
     @BeforeAll
     void setUp() {
-        userService.Register(UserDto.UserInfoRequest.builder()
+        userService.register(UserDto.UserInfoRequest.builder()
                         .name(userName)
                         .password(userName + "1234")
                         .userId(userName)
@@ -40,7 +40,7 @@ public class AuthServiceTest {
     @DisplayName("generateToken")
     void signIn()
     {
-        User user = userService.FindUserByID(userName);
+        User user = userService.findUserByID(userName);
         TokenDto tokenTest = authService.generateToken(user);
         assertThat(tokenTest.getAccessToken()).isInstanceOf(String.class);
         assertThat(tokenTest.getRefreshToken()).isInstanceOf(String.class);
@@ -56,7 +56,7 @@ public class AuthServiceTest {
     @DisplayName("generateToken then reissueToken token")
     void reissueToken()
     {
-        User user = userService.FindUserByID(userName);
+        User user = userService.findUserByID(userName);
         TokenDto tokenTest = authService.generateToken(user);
         assertThat(tokenTest.getAccessToken()).isInstanceOf(String.class);
         assertThat(tokenTest.getRefreshToken()).isInstanceOf(String.class);

@@ -1,14 +1,12 @@
 package com.chat.chattingserver.controller;
 
 import com.chat.chattingserver.common.dto.CommonResponse;
-import com.chat.chattingserver.domain.User;
 import com.chat.chattingserver.dto.UserDto;
 import com.chat.chattingserver.service.AuthService;
 import com.chat.chattingserver.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +29,7 @@ public class AuthController {
 
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(authService.generateToken(userService.Login(userloginRequest)))
+                .response(authService.generateToken(userService.login(userloginRequest)))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);

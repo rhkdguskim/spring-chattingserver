@@ -36,7 +36,7 @@ public class FriendServiceTest {
                     .password("test_user_name" + i)
                     .userId("test_user_password" + i)
                     .build();
-            userService.Register(user);
+            userService.register(user);
         }
     }
 
@@ -44,7 +44,7 @@ public class FriendServiceTest {
     @DisplayName("addFriend")
     public void addFriend()
     {
-        List<User> user = userService.GetUsers();
+        List<User> user = userService.getUsers();
         for(var user1 : user)
         {
             for(var user2 : user)
@@ -68,7 +68,7 @@ public class FriendServiceTest {
     {
         addFriend();
 
-        List<User> user = userService.GetUsers();
+        List<User> user = userService.getUsers();
         user.forEach(u1 -> {
             FriendDto.Request request = FriendDto.Request.builder().userId(u1.getUserId()).build();
             List<User> users = friendService.getFriends(request);
@@ -80,7 +80,7 @@ public class FriendServiceTest {
     @DisplayName("delFriends")
     public void delFriends()
     {
-        List<User> user = userService.GetUsers();
+        List<User> user = userService.getUsers();
 
         user.forEach(u1 -> {
             FriendDto.Request request = FriendDto.Request.builder().userId(u1.getUserId()).build();
@@ -101,7 +101,7 @@ public class FriendServiceTest {
     public void modFriends()
     {
 
-        List<User> user = userService.GetUsers();
+        List<User> user = userService.getUsers();
 
         user.forEach(u1 -> {
             FriendDto.Request request = FriendDto.Request.builder().userId(u1.getUserId()).build();

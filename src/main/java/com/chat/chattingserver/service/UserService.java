@@ -18,11 +18,11 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public List<User> GetUsers() {
+    public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    public User Register(UserDto.UserInfoRequest userRegisterUserInfoRequest)
+    public User register(UserDto.UserInfoRequest userRegisterUserInfoRequest)
     {
         if(userRepository.existsUserByUserId(userRegisterUserInfoRequest.getUserId()))
         {
@@ -37,7 +37,7 @@ public class UserService {
     }
 
 
-    public User Login(UserDto.LoginRequest userLoginRequest)
+    public User login(UserDto.LoginRequest userLoginRequest)
     {
         User user = findUserByID(userLoginRequest.getUserId());
 
@@ -50,13 +50,7 @@ public class UserService {
     }
 
 
-    public User FindUserByID(String userid)
-    {
-        return findUserByID(userid);
-    }
-
-
-    private User findUserByID(String userid)
+    public User findUserByID(String userid)
     {
         Optional<User> userOptional = userRepository.findByUserId(userid);
         if(userOptional.isEmpty())

@@ -9,8 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -40,7 +38,7 @@ public class UserServiceTest {
                 .userId(userId)
                 .build();
 
-        userService.Register(user);
+        userService.register(user);
     }
 
     @Test
@@ -53,7 +51,7 @@ public class UserServiceTest {
                 .userId(userId + "test")
                 .build();
 
-        User createdUser = userService.Register(user);
+        User createdUser = userService.register(user);
 
         assertThat(createdUser.getUserId()).isEqualTo(userId + "test");
         assertThat(createdUser.getUsername()).isEqualTo(userName + "test");
@@ -65,7 +63,7 @@ public class UserServiceTest {
                 .build();
 
         try {
-            userService.Register(user2);
+            userService.register(user2);
             fail();
         } catch (UserException e)
         {
@@ -77,7 +75,7 @@ public class UserServiceTest {
     @DisplayName("login")
     public void login()
     {
-        User user = userService.Login(UserDto.LoginRequest.builder()
+        User user = userService.login(UserDto.LoginRequest.builder()
                         .userId(userId)
                         .password(userPassword)
                         .build());
@@ -86,7 +84,7 @@ public class UserServiceTest {
         assertThat(user.getUserId()).isEqualTo(userId);
 
         try {
-            userService.Login(UserDto.LoginRequest.builder()
+            userService.login(UserDto.LoginRequest.builder()
                     .userId(userId)
                     .password(userPassword + "1")
                     .build());
@@ -101,13 +99,13 @@ public class UserServiceTest {
     @DisplayName("findById")
     public void findByID()
     {
-        User user = userService.FindUserByID(userId);
+        User user = userService.findUserByID(userId);
 
         assertThat(user.getUserId()).isEqualTo(userId);
         assertThat(user.getUsername()).isEqualTo(userName);
 
         try {
-            userService.FindUserByID(userId + "test");
+            userService.findUserByID(userId + "test");
             fail();
         } catch (UserException e) {
             assertThat(e.getCode()).isEqualTo(UserException.ErrorCode.NO_USER_FOUNED.toString());

@@ -32,7 +32,7 @@ public class ChatContoller {
 
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(this.chatService.GetChatMessageByCursor(request))
+                .response(this.chatService.getChatMessageByCursor(request))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);

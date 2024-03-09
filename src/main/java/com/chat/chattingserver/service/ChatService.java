@@ -9,7 +9,6 @@ import com.chat.chattingserver.repository.ChatRepository;
 import com.chat.chattingserver.repository.RoomRepository;
 import com.chat.chattingserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -17,25 +16,25 @@ import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ChatService {
-    private final int MAX_CHATTING_CNT = 50;
 
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final ChatRepository chatRepository;
     private final ModelMapper modelMapper;
 
-    public ChatMessage CreateChatMessage(ChatDto.ChatMessageCreateRequest request)
+    public ChatMessage createChatMessage(ChatDto.ChatMessageCreateRequest request)
     {
         User user = userRepository.findByUserId(request.getUserId()).orElseThrow(() -> new RuntimeException("there is no User"));
         Room room = roomRepository.findById(request.getRoomId()).orElse(null);
 
         // Last Chatting Update
-        room.setLastChat(request.getMessage());
+        Objects.requireNonNull(room).setLastChat(request.getMessage());
         roomRepository.save(room);
 
         // Add Chatting
@@ -47,8 +46,9 @@ public class ChatService {
         return modelMapper.map(chat, ChatMessage.class);
     }
 
-    public List<ChatMessage> GetChatMessageByCursor(ChatDto.ChatMessageRequest request)
+    public List<ChatMessage> getChatMessageByCursor(ChatDto.ChatMessageRequest request)
     {
+        final int MAX_CHATTING_CNT = 50;
         PageRequest page = PageRequest.of(0, MAX_CHATTING_CNT, Sort.by(Sort.Direction.DESC, "id"));
         return chatRepository.getChattings(request.getRoomId(), request.getCursor(), page).getContent().reversed();
     }

@@ -31,7 +31,7 @@ public class RoomController {
 
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(this.roomService.FindmyRoom(request))
+                .response(this.roomService.getMyRooms(request))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -42,7 +42,7 @@ public class RoomController {
     {
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(this.roomService.CreateRoom(request))
+                .response(this.roomService.createRoom(request))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);

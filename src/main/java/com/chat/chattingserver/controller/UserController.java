@@ -22,7 +22,7 @@ public class UserController {
     public ResponseEntity<CommonResponse> GetAllUsers() {
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(userService.GetUsers())
+                .response(userService.getUsers())
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -34,7 +34,7 @@ public class UserController {
 
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(userService.Register(userRegisterUserInfoRequest))
+                .response(userService.register(userRegisterUserInfoRequest))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -44,7 +44,7 @@ public class UserController {
     {
         CommonResponse response = CommonResponse.builder()
                 .success(true)
-                .response(userService.FindUserByID(id))
+                .response(userService.findUserByID(id))
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);

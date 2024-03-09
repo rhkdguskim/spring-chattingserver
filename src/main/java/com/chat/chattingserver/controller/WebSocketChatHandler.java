@@ -4,12 +4,11 @@ import com.chat.chattingserver.common.util.QueryParserUtil;
 import com.chat.chattingserver.dto.ChatDto;
 import com.chat.chattingserver.dto.WebSocketInterfaceChatDto;
 import com.chat.chattingserver.service.AuthService;
-import com.chat.chattingserver.service.chat.ChattingRoomManager;
+import com.chat.chattingserver.service.ChattingRoomService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -24,10 +23,9 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class WebSocketChatHandler extends TextWebSocketHandler {
-    private final ObjectMapper mapper;
 
-    @Autowired
-    private final ChattingRoomManager chattingRoomManager;
+    private final ObjectMapper mapper;
+    private final ChattingRoomService chattingRoomService;
     private final AuthService authService;
 
     /**
@@ -46,7 +44,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             Map<String, String> queryParams = QueryParserUtil.parseQueryParams(query);
 
             String token = queryParams.get("token");
-            chattingRoomManager.onConnect(session, authService.validate(token));
+            chattingRoomService.onConnect(session, authService.validate(token));
             log.info("{} Connected", session.getId());
         }
         else {
@@ -71,7 +69,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             case ONMESSAGE:
                 ChatDto.ChatMessageCreateRequest onMessage = mapper.readValue(mapper.writeValueAsString(chatWebSocketInterfaceDto.getPayload()), ChatDto.ChatMessageCreateRequest.class);
                 log.info("onMessage ChatType : {}, Message: {}", onMessage.getType(), onMessage.getMessage());
-                chattingRoomManager.onMessage(session, onMessage.getMessage(), onMessage.getRoomId());
+                chattingRoomService.onMessage(session, onMessage.getMessage(), onMessage.getRoomId());
                 break;
             default:
             {
@@ -89,7 +87,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        chattingRoomManager.onDisconnect(session);
+        chattingRoomService.onDisconnect(session);
         log.info("{} Disconnected", session.getId());
     }
 }

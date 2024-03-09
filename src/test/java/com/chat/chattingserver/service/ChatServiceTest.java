@@ -50,7 +50,7 @@ public class ChatServiceTest {
                 .password("test1234")
                 .userId(userId)
                 .build();
-        User createdUser = userService.Register(user);
+        User createdUser = userService.register(user);
 
 
 
@@ -67,15 +67,15 @@ public class ChatServiceTest {
                 .participants(targetUser)
                 .build();
 
-        Room room = roomService.CreateRoom(request);
+        Room room = roomService.createRoom(request);
 
-        List<Room> createdRoom = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
+        List<Room> createdRoom = roomService.getMyRooms(RoomDto.RoomRequest.builder()
                 .userId(userId)
                 .build());
 
         for(int i =0; i< chattingCnt; ++i)
         {
-            chatService.CreateChatMessage(ChatDto.ChatMessageCreateRequest.builder()
+            chatService.createChatMessage(ChatDto.ChatMessageCreateRequest.builder()
                             .roomId(createdRoom.getLast().getId())
                             .userId(userId)
                             .message(message)
@@ -88,8 +88,8 @@ public class ChatServiceTest {
     @DisplayName("Pageing Chattings")
     public void PageChatting()
     {
-        var user = userService.FindUserByID(userId);
-        var rooms = roomService.FindmyRoom(RoomDto.RoomRequest.builder()
+        var user = userService.findUserByID(userId);
+        var rooms = roomService.getMyRooms(RoomDto.RoomRequest.builder()
                 .userId(user.getUserId())
                 .build());
 
@@ -97,7 +97,7 @@ public class ChatServiceTest {
         var cursor = 99999999L;
         while (true)
         {
-            var chattings = chatService.GetChatMessageByCursor(ChatDto.ChatMessageRequest.builder()
+            var chattings = chatService.getChatMessageByCursor(ChatDto.ChatMessageRequest.builder()
                     .cursor(cursor)
                     .roomId(rooms.getFirst().getId())
                     .build());

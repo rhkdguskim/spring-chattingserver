@@ -23,22 +23,22 @@ public class RoomService {
     private final ParticipantRepository participantRepository;
     private final UserRepository userRepository;
 
-    public List<Room> FindmyRoom(RoomDto.RoomRequest request)
+    public List<Room> getMyRooms(RoomDto.RoomRequest request)
     {
         return roomRepository.findRoomByUsers(request.getUserId());
     }
 
-    public Room CreateRoom(RoomDto.AddRequest request)
+    public Room createRoom(RoomDto.AddRequest request)
     {
         Room room = new Room();
-        ArrayList<Participant> participants = new ArrayList<>();
-
         room.setRoomName(request.getRoomName());
 
-        if (request.getParticipants().size() >= 2)  {
+        // 친구채팅일 경우
+        if (request.getParticipants().size() > 1)  {
             room.setType(RoomType.FRIEND);
         }
 
+        List<Participant> participants = new ArrayList<>();
         room = this.roomRepository.save(room);
 
         for (RoomDto.ParticipantInfo user : request.getParticipants()) {
@@ -49,7 +49,7 @@ public class RoomService {
             participant.setRoomName(request.getRoomName());
             participants.add(participantRepository.save(participant));
         }
-
+        room.setParticipants(participants);
         return room;
     }
 }
