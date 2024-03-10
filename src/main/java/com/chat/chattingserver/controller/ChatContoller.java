@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Slf4j
 @Tag(name="Chat Controller", description = "Chat Controller API")
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor

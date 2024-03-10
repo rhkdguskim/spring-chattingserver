@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Slf4j
 @Tag(name = "Auth Controller", description = "Auth Controller API")
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -25,8 +24,6 @@ public class AuthController {
     private final AuthService authService;
     @PostMapping("/signin")
     public ResponseEntity<CommonResponse> Register(@RequestBody UserDto.LoginRequest userloginRequest) {
-        log.info("hi");
-
         CommonResponse response = CommonResponse.builder()
                 .success(true)
                 .response(authService.generateToken(userService.login(userloginRequest)))
