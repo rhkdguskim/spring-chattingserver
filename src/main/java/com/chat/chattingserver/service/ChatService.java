@@ -18,7 +18,7 @@ import org.modelmapper.ModelMapper;
 import java.util.List;
 import java.util.Objects;
 
-@Service
+
 @Transactional
 @RequiredArgsConstructor
 public class ChatService {
