@@ -46,7 +46,7 @@ public class ChatService {
         return modelMapper.map(chat, BroadCastMessage.ChatMessage.class);
     }
 
-    public List<BroadCastMessage> getChatMessageByCursor(ChatDto.ChatMessageRequest request)
+    public List<BroadCastMessage.ChatMessage> getChatMessageByCursor(ChatDto.ChatMessageRequest request)
     {
         final int MAX_CHATTING_CNT = 50;
         PageRequest page = PageRequest.of(0, MAX_CHATTING_CNT, Sort.by(Sort.Direction.DESC, "id"));

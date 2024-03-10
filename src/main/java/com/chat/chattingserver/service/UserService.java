@@ -43,7 +43,7 @@ public class UserService {
 
         if(!user.getPassword().equals(SecurityUtil.encryptSHA256(userLoginRequest.getPassword())))
         {
-            throw new UserException(UserException.ErrorCode.WRONG_PASSWORD);
+            throw new UserException(UserException.ErrorCode.USER_WRONG_PASSWORD);
         }
 
         return user;
@@ -55,7 +55,7 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByUserId(userid);
         if(userOptional.isEmpty())
         {
-            throw new UserException(UserException.ErrorCode.NO_USER_FOUNED);
+            throw new UserException(UserException.ErrorCode.USER_NO_FOUNED);
         }
 
         return userOptional.get();

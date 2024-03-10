@@ -90,7 +90,7 @@ public class JwtUtil {
             Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
             Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
             if (claims.get("userRole") == null || claims.get("userId") == null) {
-                throw new AuthException(AuthException.ErrorCode.INVALID_TOKEN);
+                throw new AuthException(AuthException.ErrorCode.AUTH_INVALID_TOKEN);
             }
 
             // 클레임에서 권한 정보 가져오기
@@ -103,13 +103,13 @@ public class JwtUtil {
             UserDetails principal = new User(SecurityUtil.decryptAES256(claims.get("userId").toString()), "", authorities);
             return new UsernamePasswordAuthenticationToken(principal, "", authorities);
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            throw new AuthException(AuthException.ErrorCode.UNSIGN_TOKEN);
+            throw new AuthException(AuthException.ErrorCode.AUTH_UNSIGN_TOKEN);
         } catch (ExpiredJwtException e) {
-            throw new AuthException(AuthException.ErrorCode.EXPIRED_JWT);
+            throw new AuthException(AuthException.ErrorCode.AUTH_EXPIRED_JWT);
         } catch (UnsupportedJwtException e) {
-            throw new AuthException(AuthException.ErrorCode.UNSUPPORTED_JWT);
+            throw new AuthException(AuthException.ErrorCode.AUTH_UNSUPPORTED_JWT);
         } catch (IllegalArgumentException e) {
-            throw new AuthException(AuthException.ErrorCode.ILLARGUMENT_JWT);
+            throw new AuthException(AuthException.ErrorCode.AUTH_ILLARGUMENT_JWT);
         }
     }
 
@@ -122,7 +122,7 @@ public class JwtUtil {
         Map<String,Object> jsonArray = jsonParser.parseMap(decodedPayload);
 
         if(!jsonArray.containsKey("userId")){
-            throw new AuthException(AuthException.ErrorCode.INVALID_TOKEN);
+            throw new AuthException(AuthException.ErrorCode.AUTH_INVALID_TOKEN);
         }
 
         return jsonArray.get("userId").toString();

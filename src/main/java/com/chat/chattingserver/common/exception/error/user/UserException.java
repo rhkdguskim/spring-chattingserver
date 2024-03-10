@@ -1,6 +1,6 @@
 package com.chat.chattingserver.common.exception.error.user;
 
-import com.chat.chattingserver.common.exception.error.ExceptionInterface;
+import com.chat.chattingserver.common.exception.error.ErrorCodeInterface;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,17 +8,39 @@ import org.springframework.http.HttpStatus;
 
 @Setter
 @Getter
-public class UserException extends RuntimeException implements ExceptionInterface {
+public class UserException extends RuntimeException implements ErrorCodeInterface {
     private final ErrorCode code;
-    private String userId;
-    private String password;
+    private String extraMessage;
 
-    public enum ErrorCode
+    public enum ErrorCode implements ErrorCodeInterface
     {
-        USER_ALREADY_EXIST,
-        INVALID_USER,
-        WRONG_PASSWORD,
-        NO_USER_FOUNED,
+        USER_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 사용자 입니다."),
+        USER_INVALID(HttpStatus.CONFLICT, "알 수 없는 유저입니다."),
+        USER_WRONG_PASSWORD(HttpStatus.CONFLICT, "비밀번호를 확인해주세요."),
+        USER_NO_FOUNED(HttpStatus.CONFLICT, "유저를 찾을 수 없습니다.");
+
+        private final HttpStatus httpStatus;
+        private final String message;
+
+        ErrorCode(HttpStatus httpStatus, String message) {
+            this.httpStatus = httpStatus;
+            this.message = message;
+        }
+
+        @Override
+        public String getMessage() {
+            return message;
+        }
+
+        @Override
+        public String getCode() {
+            return toString();
+        }
+
+        @Override
+        public HttpStatus getStatus() {
+            return httpStatus;
+        }
     }
 
     public UserException(ErrorCode code) {
@@ -26,26 +48,32 @@ public class UserException extends RuntimeException implements ExceptionInterfac
         this.code = code;
     }
 
+    public UserException(ErrorCode code, String extraMessage) {
+        super(extraMessage);
+        this.code = code;
+        this.extraMessage = extraMessage;
+    }
+
+
     @Override
-    public String getMessage() {
-        return switch (code) {
-            case USER_ALREADY_EXIST -> userId + "is already Exist";
-            case INVALID_USER -> userId + " is invalid user";
-            case WRONG_PASSWORD -> password + "is wrong password";
-            case NO_USER_FOUNED -> "There in no" + userId + "id";
-        };
+    public String getMessage()
+    {
+        if(!extraMessage.isEmpty())
+        {
+            return code.getMessage() + "reason:" + extraMessage;
+        }
+        else {
+            return code.getMessage();
+        }
     }
 
     @Override
     public String getCode() {
-        return code.toString();
+        return code.getCode();
     }
 
     @Override
     public HttpStatus getStatus() {
-        return switch (code) {
-            case USER_ALREADY_EXIST, INVALID_USER,
-                    WRONG_PASSWORD, NO_USER_FOUNED -> HttpStatus.CONFLICT;
-        };
+        return code.getStatus();
     }
 }

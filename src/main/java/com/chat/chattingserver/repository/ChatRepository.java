@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
-    @Query("select new com.chat.chattingserver.domain.BroadCastMessage(c.id, c.user.name, c.room.roomName, c.message, c.createdAt, c.updatedAt) " +
+    @Query("select new com.chat.chattingserver.domain.BroadCastMessage$ChatMessage(c.id, c.user.name, c.room.roomName, c.message, c.createdAt, c.updatedAt) " +
             "from Chat c where c.room.id = :roomId and c.id < :cursor")
-    Slice<BroadCastMessage> getChattings(@Param("roomId") Long roomId,
+    Slice<BroadCastMessage.ChatMessage> getChattings(@Param("roomId") Long roomId,
                                          @Param("cursor") Long cursor,
                                          Pageable pageable);
 }

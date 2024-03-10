@@ -48,7 +48,7 @@ public class SecurityUtil {
             }
             return builder.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new EncryptException(EncryptException.ErrorCode.UNSUPPORTED_ALGORITHM);
+            throw new EncryptException(EncryptException.ErrorCode.UTIL_UNSUPPORTED_ALGORITHM);
         }
     }
 
@@ -65,7 +65,7 @@ public class SecurityUtil {
                     new IvParameterSpec(iv.substring(0,16).getBytes()));
             return new String(Base64.getEncoder().encode(cipher.doFinal(text.getBytes("UTF-8"))));
         } catch(Exception e) {
-            throw new EncryptException(EncryptException.ErrorCode.UNSUPPORTED_ALGORITHM);
+            throw new EncryptException(EncryptException.ErrorCode.UTIL_UNSUPPORTED_ALGORITHM);
         }
     }
 
@@ -78,7 +78,7 @@ public class SecurityUtil {
             byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText.getBytes("UTF-8")));
             return new String(decryptedBytes);
         } catch (Exception e) {
-            throw new EncryptException(EncryptException.ErrorCode.ENCRYPT_ERROR);
+            throw new EncryptException(EncryptException.ErrorCode.UTIL_ENCRYPT_ERROR);
         }
     }
 }

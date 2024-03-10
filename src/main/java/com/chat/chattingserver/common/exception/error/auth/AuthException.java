@@ -1,18 +1,40 @@
 package com.chat.chattingserver.common.exception.error.auth;
 
+import com.chat.chattingserver.common.exception.error.ErrorCodeInterface;
 import org.springframework.http.HttpStatus;
 
-public class AuthException extends RuntimeException {
+public class AuthException extends RuntimeException implements ErrorCodeInterface {
 
     private final ErrorCode code;
-
-    public enum ErrorCode
+    private String extraMessage = "";
+    public enum ErrorCode implements ErrorCodeInterface
     {
-        INVALID_TOKEN,
-        UNSIGN_TOKEN,
-        EXPIRED_JWT,
-        UNSUPPORTED_JWT,
-        ILLARGUMENT_JWT;
+        AUTH_INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "알 수 없는 토큰입니다."),
+        AUTH_UNSIGN_TOKEN(HttpStatus.UNAUTHORIZED, "서명되지 않는 토큰입니다."),
+        AUTH_EXPIRED_JWT(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
+        AUTH_UNSUPPORTED_JWT(HttpStatus.UNAUTHORIZED, "지원되지 않는 토큰입니다."),
+        AUTH_ILLARGUMENT_JWT(HttpStatus.UNAUTHORIZED, "잘못된 토큰 입력입니다.");
+
+        private final HttpStatus httpStatus;
+        private final String message;
+        ErrorCode(HttpStatus httpStatus, String message) {
+            this.httpStatus = httpStatus;
+            this.message = message;
+        }
+        @Override
+        public String getMessage() {
+            return message;
+        }
+
+        @Override
+        public String getCode() {
+            return toString();
+        }
+
+        @Override
+        public HttpStatus getStatus() {
+            return httpStatus;
+        }
     }
 
     public AuthException(ErrorCode code) {
@@ -20,28 +42,30 @@ public class AuthException extends RuntimeException {
         this.code = code;
     }
 
+    public AuthException(ErrorCode code, String extraMessage) {
+        super(extraMessage);
+        this.code = code;
+        this.extraMessage = extraMessage;
+    }
+
     @Override
     public String getMessage()
     {
-        return switch (code) {
-            case INVALID_TOKEN -> "Invalid Token";
-            case EXPIRED_JWT -> "Jwt Expired";
-            case UNSUPPORTED_JWT -> "unSupport Jwt";
-            case UNSIGN_TOKEN -> "unSigned Token";
-            case ILLARGUMENT_JWT -> "Illagrument";
-        };
+        if(!extraMessage.isEmpty())
+        {
+            return code.getMessage() + "reason:" + extraMessage;
+        }
+        else {
+            return code.getMessage();
+        }
     }
 
     public HttpStatus getStatus() {
-        return switch (code) {
-            case INVALID_TOKEN, EXPIRED_JWT,
-                    UNSUPPORTED_JWT, UNSIGN_TOKEN,
-                    ILLARGUMENT_JWT -> HttpStatus.UNAUTHORIZED;
-        };
+        return code.getStatus();
     }
 
     public String getCode()
     {
-        return code.toString();
+        return code.getCode();
     }
 }

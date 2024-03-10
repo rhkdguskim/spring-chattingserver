@@ -91,7 +91,7 @@ public class UserServiceTest {
             fail();
         } catch (UserException e)
         {
-            assertThat(e.getCode()).isEqualTo(UserException.ErrorCode.WRONG_PASSWORD.toString());
+            assertThat(e.getCode()).isEqualTo(UserException.ErrorCode.USER_WRONG_PASSWORD.toString());
         }
     }
 
@@ -108,7 +108,7 @@ public class UserServiceTest {
             userService.findUserByID(userId + "test");
             fail();
         } catch (UserException e) {
-            assertThat(e.getCode()).isEqualTo(UserException.ErrorCode.NO_USER_FOUNED.toString());
+            assertThat(e.getCode()).isEqualTo(UserException.ErrorCode.USER_NO_FOUNED.toString());
         }
     }
 }

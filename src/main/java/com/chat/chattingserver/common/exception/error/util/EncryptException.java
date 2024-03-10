@@ -1,15 +1,39 @@
 package com.chat.chattingserver.common.exception.error.util;
 
-import com.chat.chattingserver.common.exception.error.ExceptionInterface;
+import com.chat.chattingserver.common.exception.error.ErrorCodeInterface;
+import com.chat.chattingserver.common.exception.error.auth.AuthException;
 import org.springframework.http.HttpStatus;
 
-public class EncryptException extends RuntimeException implements ExceptionInterface {
+public class EncryptException extends RuntimeException implements ErrorCodeInterface {
     private final ErrorCode code;
-
-    public enum ErrorCode
+    private String extraMessage;
+    public enum ErrorCode implements ErrorCodeInterface
     {
-        UNSUPPORTED_ALGORITHM,
-        ENCRYPT_ERROR,
+        UTIL_UNSUPPORTED_ALGORITHM(HttpStatus.CONFLICT, "지원되지 않는 알고리즘입니다."),
+        UTIL_ENCRYPT_ERROR(HttpStatus.CONFLICT, "암호화 에러입니다.");
+
+        private final HttpStatus httpStatus;
+        private final String message;
+
+        ErrorCode(HttpStatus httpStatus, String message) {
+            this.httpStatus = httpStatus;
+            this.message = message;
+        }
+
+        @Override
+        public String getMessage() {
+            return message;
+        }
+
+        @Override
+        public String getCode() {
+            return toString();
+        }
+
+        @Override
+        public HttpStatus getStatus() {
+            return httpStatus;
+        }
     }
 
     public EncryptException(ErrorCode code) {
@@ -17,23 +41,30 @@ public class EncryptException extends RuntimeException implements ExceptionInter
         this.code = code;
     }
 
+    public EncryptException(ErrorCode code, String extraMessage) {
+        super(extraMessage);
+        this.code = code;
+        this.extraMessage = extraMessage;
+    }
+
     @Override
     public String getMessage()
     {
-        return switch (code) {
-            case UNSUPPORTED_ALGORITHM -> "Unsupported Algorithm";
-            case ENCRYPT_ERROR -> "Encrypt Errror";
-        };
+        if(!extraMessage.isEmpty())
+        {
+            return code.getMessage() + "reason:" + extraMessage;
+        }
+        else {
+            return code.getMessage();
+        }
     }
 
     public HttpStatus getStatus() {
-        return switch (code) {
-            case UNSUPPORTED_ALGORITHM, ENCRYPT_ERROR -> HttpStatus.CONFLICT;
-        };
+        return code.getStatus();
     }
 
     public String getCode()
     {
-        return code.toString();
+        return code.getCode();
     }
 }

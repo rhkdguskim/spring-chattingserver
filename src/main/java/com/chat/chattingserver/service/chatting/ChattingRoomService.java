@@ -63,15 +63,15 @@ public class ChattingRoomService implements ChatMessageProcessor {
      */
     private void joinRoom(SessionData data)
     {
-        ParticipantSession participantSession = new ParticipantSession(data.getSession(), data.getUser().getUserId(), data.getUser().getName());
+        RoomParticipant roomParticipant = new RoomParticipant(data.getSession(), data.getUser().getUserId(), data.getUser().getName());
         for (Room room : data.getRooms()) {
             if (!chattingRooms.containsKey(room.getId())) {
                 // 채팅방이 존재하지 않다면 채팅방을 만든다.
                 chattingRooms.put(room.getId(), new ChattingRoom());
-                chattingRooms.get(room.getId()).addParticipant(participantSession.session.getId(), participantSession);
+                chattingRooms.get(room.getId()).addParticipant(roomParticipant.session.getId(), roomParticipant);
             } else {
                 // 기존채팅방에 참가자를 추가한다.
-                chattingRooms.get(room.getId()).addParticipant(participantSession.session.getId(), participantSession);
+                chattingRooms.get(room.getId()).addParticipant(roomParticipant.session.getId(), roomParticipant);
             }
         }
     }
@@ -144,11 +144,11 @@ public class ChattingRoomService implements ChatMessageProcessor {
 
     @RequiredArgsConstructor
     private static class ChattingRoom {
-        private final Map<String, ParticipantSession> participants = new HashMap<>();
+        private final Map<String, RoomParticipant> participants = new HashMap<>();
 
-        public void addParticipant(String sessionID, ParticipantSession participantSession)
+        public void addParticipant(String sessionID, RoomParticipant roomParticipant)
         {
-            participants.put(sessionID, participantSession);
+            participants.put(sessionID, roomParticipant);
         }
 
         public void removeParticipant(String sessionId)
@@ -168,7 +168,7 @@ public class ChattingRoomService implements ChatMessageProcessor {
         }
     }
 
-    private record ParticipantSession(UserSession session, String userId, String userName) {
+    private record RoomParticipant(UserSession session, String userId, String userName) {
         public <T extends AbstractBroadCastMessage> void sendMessage(T message) throws Exception {
             String stringMessage = JsonUtil.toJson(message);
             session.sendMessage(stringMessage);
