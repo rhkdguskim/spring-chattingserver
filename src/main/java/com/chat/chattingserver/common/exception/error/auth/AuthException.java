@@ -1,12 +1,10 @@
 package com.chat.chattingserver.common.exception.error.auth;
 
+import com.chat.chattingserver.common.exception.AbstactException;
 import com.chat.chattingserver.common.exception.error.ErrorCodeInterface;
 import org.springframework.http.HttpStatus;
 
-public class AuthException extends RuntimeException implements ErrorCodeInterface {
-
-    private final ErrorCode code;
-    private String extraMessage = "";
+public class AuthException extends AbstactException {
     public enum ErrorCode implements ErrorCodeInterface
     {
         AUTH_INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "알 수 없는 토큰입니다."),
@@ -38,34 +36,10 @@ public class AuthException extends RuntimeException implements ErrorCodeInterfac
     }
 
     public AuthException(ErrorCode code) {
-        super();
-        this.code = code;
+        super(code);
     }
 
     public AuthException(ErrorCode code, String extraMessage) {
-        super(extraMessage);
-        this.code = code;
-        this.extraMessage = extraMessage;
-    }
-
-    @Override
-    public String getMessage()
-    {
-        if(!extraMessage.isEmpty())
-        {
-            return code.getMessage() + "reason:" + extraMessage;
-        }
-        else {
-            return code.getMessage();
-        }
-    }
-
-    public HttpStatus getStatus() {
-        return code.getStatus();
-    }
-
-    public String getCode()
-    {
-        return code.getCode();
+        super(code, extraMessage);
     }
 }

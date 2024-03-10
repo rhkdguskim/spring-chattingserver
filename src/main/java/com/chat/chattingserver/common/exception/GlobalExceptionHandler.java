@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(EncryptException.class)
-    protected ResponseEntity<CommonResponse> handleEncryptException(EncryptException ex) {
+    protected ResponseEntity<CommonResponse> handleAuthException(EncryptException ex) {
         ErrorResponse error = ErrorResponse.builder()
                 .status(ex.getStatus().value())
                 .message(ex.getMessage())
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthException.class)
-    protected ResponseEntity<CommonResponse> handleEncryptException(AuthException ex) {
+    protected ResponseEntity<CommonResponse> handleAuthException(AuthException ex) {
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(ex.getStatus().value())
@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserException.class)
-    protected ResponseEntity<CommonResponse> handleEncryptException(UserException ex) {
+    protected ResponseEntity<CommonResponse> handleUserException(UserException ex) {
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(ex.getStatus().value())

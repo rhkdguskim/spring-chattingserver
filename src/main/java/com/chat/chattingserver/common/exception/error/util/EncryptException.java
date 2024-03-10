@@ -1,12 +1,11 @@
 package com.chat.chattingserver.common.exception.error.util;
 
+import com.chat.chattingserver.common.exception.AbstactException;
 import com.chat.chattingserver.common.exception.error.ErrorCodeInterface;
 import com.chat.chattingserver.common.exception.error.auth.AuthException;
 import org.springframework.http.HttpStatus;
 
-public class EncryptException extends RuntimeException implements ErrorCodeInterface {
-    private final ErrorCode code;
-    private String extraMessage;
+public class EncryptException extends AbstactException {
     public enum ErrorCode implements ErrorCodeInterface
     {
         UTIL_UNSUPPORTED_ALGORITHM(HttpStatus.CONFLICT, "지원되지 않는 알고리즘입니다."),
@@ -37,34 +36,10 @@ public class EncryptException extends RuntimeException implements ErrorCodeInter
     }
 
     public EncryptException(ErrorCode code) {
-        super();
-        this.code = code;
+        super(code);
     }
 
     public EncryptException(ErrorCode code, String extraMessage) {
-        super(extraMessage);
-        this.code = code;
-        this.extraMessage = extraMessage;
-    }
-
-    @Override
-    public String getMessage()
-    {
-        if(!extraMessage.isEmpty())
-        {
-            return code.getMessage() + "reason:" + extraMessage;
-        }
-        else {
-            return code.getMessage();
-        }
-    }
-
-    public HttpStatus getStatus() {
-        return code.getStatus();
-    }
-
-    public String getCode()
-    {
-        return code.getCode();
+        super(code, extraMessage);
     }
 }

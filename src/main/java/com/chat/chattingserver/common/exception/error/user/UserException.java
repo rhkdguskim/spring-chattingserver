@@ -1,5 +1,6 @@
 package com.chat.chattingserver.common.exception.error.user;
 
+import com.chat.chattingserver.common.exception.AbstactException;
 import com.chat.chattingserver.common.exception.error.ErrorCodeInterface;
 
 import lombok.Getter;
@@ -8,10 +9,7 @@ import org.springframework.http.HttpStatus;
 
 @Setter
 @Getter
-public class UserException extends RuntimeException implements ErrorCodeInterface {
-    private final ErrorCode code;
-    private String extraMessage;
-
+public class UserException extends AbstactException {
     public enum ErrorCode implements ErrorCodeInterface
     {
         USER_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 사용자 입니다."),
@@ -44,36 +42,10 @@ public class UserException extends RuntimeException implements ErrorCodeInterfac
     }
 
     public UserException(ErrorCode code) {
-        super();
-        this.code = code;
+        super(code);
     }
 
     public UserException(ErrorCode code, String extraMessage) {
-        super(extraMessage);
-        this.code = code;
-        this.extraMessage = extraMessage;
-    }
-
-
-    @Override
-    public String getMessage()
-    {
-        if(!extraMessage.isEmpty())
-        {
-            return code.getMessage() + "reason:" + extraMessage;
-        }
-        else {
-            return code.getMessage();
-        }
-    }
-
-    @Override
-    public String getCode() {
-        return code.getCode();
-    }
-
-    @Override
-    public HttpStatus getStatus() {
-        return code.getStatus();
+        super(code, extraMessage);
     }
 }
